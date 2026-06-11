@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP PERFORMANCE | Engine Performance Calculator</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800&family=Open+Sans:wght@400;600&family=JetBrains+Mono:wght@500;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..900&family=Open+Sans:wght@100..900&family=Raleway:wght@100..900&display=swap" rel="stylesheet">
+    <script src="src/styles/tailwind.js"></script>
+    <link rel="stylesheet" href="src/styles/styles.css">
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container">
+
+    <!-- Header -->
+    <header class="w-full top-0 sticky bg-surface/90 backdrop-blur-md border-b border-outline-variant/20 z-50 glass-panel">
+        <div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop py-sm flex items-center justify-between">
+            <div class="flex items-center gap-md">
+                <div class="w-8 h-8 bg-primary-container rounded flex items-center justify-center pulse-glow">
+                    <span class="material-symbols-outlined text-on-primary-container text-sm">bolt</span>
+                </div>
+                <span class="font-headline-md text-headline-md text-on-surface tracking-tight">AP<span class="text-primary">.</span>PERFORMANCE</span>
+            </div>
+            <div class="flex items-center gap-sm">
+                <a href="index.html" class="nav-link hidden sm:flex items-center gap-xs bg-primary-container/20 px-3 py-1 rounded-full border border-primary/30 text-[10px] font-label-mono text-primary transition-colors">
+                    <span class="material-symbols-outlined text-sm">analytics</span> ENGINE
+                </a>
+                <a href="injector.html" class="nav-link hidden sm:flex items-center gap-xs bg-surface-container-highest px-3 py-1 rounded-full border border-outline-variant/20 text-[10px] font-label-mono text-tertiary hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined text-sm">science</span> INJECTOR
+                </a>
+                <a href="camshaft.html" class="nav-link hidden sm:flex items-center gap-xs bg-surface-container-highest px-3 py-1 rounded-full border border-outline-variant/20 text-[10px] font-label-mono text-tertiary hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined text-sm">precision_manufacturing</span> CAMSHAFT
+                </a>
+                <div class="hidden sm:flex items-center gap-xs bg-surface-container-highest px-3 py-1 rounded-full border border-outline-variant/20">
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                    <span class="font-label-mono text-[10px] text-tertiary">SYSTEM ONLINE</span>
+                </div>
+                <button id="themeToggle" class="p-2 rounded-full hover:bg-surface-container-highest transition-colors" title="Toggle unit system">
+                    <span class="material-symbols-outlined text-secondary text-sm">swap_horiz</span>
+                </button>
+                <button id="saveSetupBtn" class="p-2 rounded-full hover:bg-surface-container-highest transition-colors" title="Save current setup">
+                    <span class="material-symbols-outlined text-secondary text-sm">save</span>
+                </button>
+            </div>
+        </div>
+        <div class="flex sm:hidden items-center gap-sm px-margin-mobile pb-sm">
+            <a href="index.html" class="nav-link flex-1 text-center bg-primary-container/20 px-3 py-2 rounded-lg border border-primary/30 text-[10px] font-label-mono text-primary">ENGINE</a>
+            <a href="injector.html" class="nav-link flex-1 text-center bg-surface-container-highest px-3 py-2 rounded-lg border border-outline-variant/20 text-[10px] font-label-mono text-tertiary">INJECTOR</a>
+            <a href="camshaft.html" class="nav-link flex-1 text-center bg-surface-container-highest px-3 py-2 rounded-lg border border-outline-variant/20 text-[10px] font-label-mono text-tertiary">CAMSHAFT</a>
+            <a href="exhaust.html" class="nav-link flex-1 text-center bg-surface-container-highest px-3 py-2 rounded-lg border border-outline-variant/20 text-[10px] font-label-mono text-tertiary">EXHAUST</a>
+        </div>
+    </header>
+
+    <main class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop py-lg grid grid-cols-1 md:grid-cols-12 gap-gutter">
+        <div class="md:col-span-12 mb-md flex flex-col md:flex-row md:items-end justify-between border-l-4 border-primary pl-md slide-in">
+            <div>
+                <h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">ENGINE PERFORMANCE</span></h1>
+                <p class="font-label-mono text-[11px] text-tertiary mt-xs uppercase tracking-wider">Advanced 4-Stroke Simulation Engine</p>
+            </div>
+            <div class="mt-base md:mt-0 flex gap-base flex-wrap">
+                <span id="statusBadge" class="bg-surface-container-highest px-3 py-1 rounded text-xs font-label-mono text-secondary border border-outline-variant/30 flex items-center gap-xs">
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> STATUS: READY
+                </span>
+                <span class="bg-surface-container-highest px-3 py-1 rounded text-xs font-label-mono text-secondary border border-outline-variant/30">VER: 1.0-STABLE</span>
+                <span id="unitBadge" class="bg-surface-container-highest px-3 py-1 rounded text-xs font-label-mono text-accent-gold border border-outline-variant/30">UNITS: METRIC</span>
+            </div>
+        </div>
+
+        <!-- Left Column: Inputs -->
+        <section class="md:col-span-5 space-y-gutter">
+            <h2 class="sr-only">Engine Specs & Inputs</h2>
+
+            <div class="bg-surface-container-low border border-outline-variant/20 rounded-lg overflow-hidden flex flex-col">
+                <div class="bg-surface-container-highest px-md py-base border-b border-outline-variant/20 flex items-center justify-between">
+                    <span class="font-headline-md text-headline-md text-on-surface flex items-center gap-xs">
+                        <span class="material-symbols-outlined text-primary text-sm">settings</span>
+                        Engine Configuration
+                    </span>
+                    <span class="font-label-mono text-[10px] text-tertiary">ENGINE_SPEC</span>
+                </div>
+                <div class="p-md space-y-md">
+                    <div class="grid grid-cols-3 gap-md">
+                        <div class="space-y-xs">
+                            <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase">Cylinders</label>
+                            <select id="cylCount" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display text-data-display p-base rounded-md outline-none transition-all appearance-none cursor-pointer">
+                                <option value="1" selected>1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="6">6</option>
+                                <option value="8">8</option>
+                            </select>
+                        </div>
+                        <div class="space-y-xs">
+                            <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase">Cycle</label>
+                            <select id="cycleType" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display text-data-display p-base rounded-md outline-none transition-all appearance-none cursor-pointer">
+                                <option value="4" selected>4-Stroke</option>
+                                <option value="2">2-Stroke</option>
+                            </select>
+                        </div>
+                        <div class="space-y-xs">
+                            <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase">Fuel</label>
+                            <select id="fuelType" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display text-data-display p-base rounded-md outline-none transition-all appearance-none cursor-pointer">
+                                <option value="gasoline" selected>Gasoline</option>
+                                <option value="e85">E85</option>
+                                <option value="methanol">Methanol</option>
+                                <option value="diesel">Diesel</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-surface-container-low border border-outline-variant/20 rounded-lg overflow-hidden flex flex-col">
+                <div class="bg-surface-container-highest px-md py-base border-b border-outline-variant/20 flex items-center justify-between">
+                    <span class="font-headline-md text-headline-md text-on-surface flex items-center gap-xs">
+                        <span class="material-symbols-outlined text-primary text-sm">architecture</span>
+                        Basic Geometry
+                    </span>
+                    <span class="font-label-mono text-[10px] text-tertiary">CORE_SPECS</span>
+                </div>
+                <div class="p-md grid grid-cols-2 gap-md">
+                    <div class="space-y-xs">
+                        <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase" id="boreLabel">Bore (mm)</label>
+                        <input id="boreInput" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display text-data-display p-base rounded-md outline-none transition-all" placeholder="0.0" step="0.1" type="number" value="0">
+                        <div class="flex justify-between text-[10px] font-label-mono text-primary/70 px-1 mt-1"><span id="boreRange">RANGE: 47-102 MM</span></div>
+                    </div>
+                    <div class="space-y-xs">
+                        <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase" id="strokeLabel">Stroke (mm)</label>
+                        <input id="strokeInput" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display text-data-display p-base rounded-md outline-none transition-all" placeholder="0.0" step="0.1" type="number" value="0">
+                        <div class="flex justify-between text-[10px] font-label-mono text-primary/70 px-1 mt-1"><span id="strokeRange">RANGE: 41-90 MM</span></div>
+                    </div>
+                </div>
+                <div class="px-md pb-md grid grid-cols-2 gap-md">
+                    <div class="space-y-xs">
+                        <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase">Comp. Ratio</label>
+                        <input id="compRatioInput" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display text-data-display p-base rounded-md outline-none transition-all" placeholder="0.0" step="0.1" type="number" value="0" min="6" max="16">
+                    </div>
+                    <div class="space-y-xs">
+                        <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase">Rod Length (mm)</label>
+                        <input id="rodLengthInput" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display text-data-display p-base rounded-md outline-none transition-all" placeholder="0.0" step="0.5" type="number" value="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-surface-container-low border border-outline-variant/20 rounded-lg overflow-hidden flex flex-col">
+                <div class="bg-surface-container-highest px-md py-base border-b border-outline-variant/20 flex items-center justify-between">
+                    <span class="font-headline-md text-headline-md text-on-surface flex items-center gap-xs">
+                        <span class="material-symbols-outlined text-primary text-sm">engineering</span>
+                        Valve Configuration
+                    </span>
+                    <span class="font-label-mono text-[10px] text-tertiary">VALVE_TRAIN</span>
+                </div>
+                <div class="p-md space-y-md">
+                    <!-- Valves per Cylinder Selector -->
+                    <div class="space-y-xs">
+                        <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase">Valves per Cylinder</label>
+                        <select id="valveCountSelect" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display text-data-display p-base rounded-md outline-none transition-all appearance-none cursor-pointer">
+                            <option value="2" selected>2 Valves</option>
+                            <option value="4">4 Valves</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-md">
+                        <div class="space-y-xs">
+                            <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase">IN Valve (mm)</label>
+                            <input id="inValveInput" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display text-data-display p-base rounded-md outline-none transition-all" placeholder="0.0" step="0.1" type="number" value="0">
+                            <div class="flex justify-between text-[10px] font-label-mono text-primary/70 px-1 mt-1">
+                                <span id="maxInValveLabel">MAX DIA: 0.0 MM</span>
+                            </div>
+                        </div>
+                        <div class="space-y-xs">
+                            <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase">EX Valve (mm)</label>
+                            <input id="exValveInput" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display text-data-display p-base rounded-md outline-none transition-all" placeholder="0.0" step="0.1" type="number" value="0">
+                            <div class="flex justify-between text-[10px] font-label-mono text-primary/70 px-1 mt-1">
+                                <span id="maxExValveLabel">MAX DIA: 0.0 MM</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-surface-container-low border border-outline-variant/20 rounded-lg overflow-hidden flex flex-col">
+                <div class="bg-surface-container-highest px-md py-base border-b border-outline-variant/20 flex items-center justify-between">
+                    <span class="font-headline-md text-headline-md text-on-surface flex items-center gap-xs">
+                        <span class="material-symbols-outlined text-primary text-sm">settings_input_component</span>
+                        Inner Diameter of Valve Seat
+                    </span>
+                    <span class="font-label-mono text-[10px] text-tertiary">SEAT_GEOMETRY</span>
+                </div>
+                <div class="p-md grid grid-cols-2 gap-md">
+                    <div class="space-y-xs">
+                        <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase">IN Seat (mm)</label>
+                        <input id="inSeatInput" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display text-data-display p-base rounded-md outline-none transition-all" placeholder="0.0" step="0.1" type="number" value="0">
+                        <div class="flex justify-between text-[10px] font-label-mono text-primary/70 px-1 mt-1">
+                            <span id="maxInSeatLabel">MAX DIA: -2.5 MM</span>
+                        </div>
+                    </div>
+                    <div class="space-y-xs">
+                        <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase">EX Seat (mm)</label>
+                        <input id="exSeatInput" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display text-data-display p-base rounded-md outline-none transition-all" placeholder="0.0" step="0.1" type="number" value="0">
+                        <div class="flex justify-between text-[10px] font-label-mono text-primary/70 px-1 mt-1">
+                            <span id="maxExSeatLabel">MAX DIA: -3.0 MM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-surface-container-low border border-outline-variant/20 rounded-lg overflow-hidden flex flex-col">
+                <div class="bg-surface-container-highest px-md py-base border-b border-outline-variant/20 flex items-center justify-between">
+                    <span class="font-headline-md text-headline-md text-on-surface flex items-center gap-xs">
+                        <span class="material-symbols-outlined text-primary text-sm">speed</span>
+                        Efficiency Parameters
+                    </span>
+                    <span class="font-label-mono text-[10px] text-tertiary">FLUID_DYNAMICS</span>
+                </div>
+                <div class="p-md space-y-md">
+                    <div class="grid grid-cols-2 gap-md">
+                        <div class="space-y-xs">
+                            <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase">Gas Speed (m/s)</label>
+                            <input id="gasSpeedInput" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display text-data-display p-base rounded-md outline-none transition-all" type="number" value="0">
+                            <div class="flex justify-between text-[10px] font-label-mono text-tertiary px-1"><span>OPTIMAL: 100-110</span></div>
+                        </div>
+                        <div class="space-y-xs">
+                            <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase">Vol. Efficiency (%)</label>
+                            <input id="veInput" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display text-data-display p-base rounded-md outline-none transition-all" max="130" type="number" value="0">
+                            <div class="flex justify-between text-[10px] font-label-mono text-tertiary px-1"><span>TYPICAL: 80-95%</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-md pt-base">
+                <button id="resetBtn" class="flex-1 bg-surface-container-highest border border-outline-variant text-on-surface font-bold py-md px-lg rounded transition-all active:scale-95 hover:bg-surface-bright flex items-center justify-center gap-sm">
+                    <span class="material-symbols-outlined">restart_alt</span>
+                    RESET
+                </button>
+                <button id="calculateBtn" class="flex-[2] bg-primary-container text-on-primary-container font-extrabold py-md px-lg rounded accent-clip transition-all active:scale-95 hover:opacity-90 flex items-center justify-center gap-sm shadow-lg shadow-primary-container/20">
+                    <span class="material-symbols-outlined">analytics</span>
+                    CALCULATE SIMULATION
+                </button>
+            </div>
+            <div class="flex gap-md">
+                <button id="quickCompareBtn" class="flex-1 bg-surface-container border border-outline-variant/30 text-secondary font-bold py-sm px-md rounded transition-all active:scale-95 hover:bg-surface-container-highest flex items-center justify-center gap-xs text-sm">
+                    <span class="material-symbols-outlined text-sm">compare_arrows</span>
+                    QUICK COMPARE
+                </button>
+                <button id="exportBtn" class="flex-1 bg-surface-container border border-outline-variant/30 text-secondary font-bold py-sm px-md rounded transition-all active:scale-95 hover:bg-surface-container-highest flex items-center justify-center gap-xs text-sm">
+                    <span class="material-symbols-outlined text-sm">download</span>
+                    EXPORT REPORT
+                </button>
+            </div>
+        </section>
+
+        <!-- Right Column: Results -->
+        <section class="md:col-span-7 space-y-gutter relative">
+            <h2 class="sr-only">Performance Analysis</h2>
+
+            <div id="resultsPanel" class="bg-black/40 dyno-grid-bg border border-outline-variant/30 rounded-xl p-lg relative overflow-hidden transition-all duration-300">
+                <div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-lg relative z-10">
+                    <div class="flex flex-col border-l border-primary/30 pl-md slide-in">
+                        <span class="font-label-mono text-label-mono text-tertiary uppercase">Displacement</span>
+                        <div class="flex items-baseline gap-xs">
+                            <span id="dispValue" class="font-data-display text-3xl sm:text-4xl md:text-5xl text-on-surface tracking-tighter">0.0</span>
+                            <span id="dispUnit" class="font-label-mono text-headline-md text-primary">CC</span>
+                        </div>
+                        <span id="dispCID" class="text-[10px] font-label-mono text-tertiary mt-[-4px]">0.0 CID</span>
+                    </div>
+                    <div class="flex flex-col border-l border-primary/30 pl-md slide-in">
+                        <span class="font-label-mono text-label-mono text-tertiary uppercase">Potential Power</span>
+                        <div class="flex items-baseline gap-xs">
+                            <span id="powerValue" class="font-data-display text-3xl sm:text-4xl md:text-5xl text-primary tracking-tighter">0.0</span>
+                            <span id="powerUnit" class="font-label-mono text-headline-md text-secondary">HP</span>
+                        </div>
+                        <span id="powerRpm" class="text-[10px] font-label-mono text-tertiary mt-[-8px]">@ 0 RPM</span>
+                    </div>
+                    <div class="flex flex-col border-l border-primary/30 pl-md slide-in">
+                        <span class="font-label-mono text-label-mono text-tertiary uppercase">Air Flow (Debit)</span>
+                        <div class="flex items-baseline gap-xs">
+                            <span id="cfmValue" class="font-data-display text-3xl sm:text-4xl md:text-5xl text-on-surface tracking-tighter">0.0</span>
+                            <span class="font-label-mono text-headline-md text-secondary">CFM</span>
+                        </div>
+                        <div id="flowMeter" class="flex gap-1 mt-1"></div>
+                    </div>
+                    <div class="flex flex-col border-l border-primary/30 pl-md slide-in">
+                        <span class="font-label-mono text-label-mono text-tertiary uppercase">Max Torque</span>
+                        <div class="flex items-baseline gap-xs">
+                            <span id="torqueValue" class="font-data-display text-3xl sm:text-4xl md:text-5xl text-on-surface tracking-tighter">0.0</span>
+                            <span id="torqueUnit" class="font-label-mono text-headline-md text-secondary">LB.FT</span>
+                        </div>
+                        <span id="torqueNm" class="text-[10px] font-label-mono text-tertiary mt-[-4px]">0.0 Nm</span>
+                    </div>
+                </div>
+
+                <div class="mt-lg h-56 sm:h-64 md:h-72 w-full bg-surface-container-lowest/80 rounded-lg border border-outline-variant/10 relative overflow-hidden">
+                    <canvas id="dynoChart" class="w-full h-full"></canvas>
+                    <div id="chartOverlay" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none transition-opacity duration-300">
+                        <span class="font-label-mono text-[10px] text-tertiary uppercase mb-base">Dynamic Power Curve Simulation</span>
+                        <div class="w-48 h-1 bg-surface-container-highest overflow-hidden relative rounded-full">
+                            <div class="absolute inset-0 bg-primary w-2/3 animate-pulse rounded-full"></div>
+                        </div>
+                    </div>
+                    <div class="absolute bottom-2 right-3 flex gap-sm z-10">
+                        <span class="text-[9px] font-label-mono text-primary flex items-center gap-xs"><span class="w-2 h-2 rounded-full bg-primary inline-block"></span> HP</span>
+                        <span class="text-[9px] font-label-mono text-accent-teal flex items-center gap-xs"><span class="w-2 h-2 rounded-full bg-accent-teal inline-block"></span> TQ</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-md">
+                <div class="bg-surface-container border border-outline-variant/10 p-md rounded-lg hover:border-primary/30 transition-all">
+                    <span class="block font-label-mono text-[10px] text-tertiary mb-xs">BMEP POTENTIAL</span>
+                    <span id="bmepValue" class="font-data-display text-headline-md text-on-surface">0.0 <span class="text-xs font-body-md text-tertiary">BAR</span></span>
+                </div>
+                <div class="bg-surface-container border border-outline-variant/10 p-md rounded-lg hover:border-primary/30 transition-all">
+                    <span class="block font-label-mono text-[10px] text-tertiary mb-xs">PISTON SPEED @ REDLINE</span>
+                    <span id="pistonSpeedValue" class="font-data-display text-headline-md text-on-surface">0.0 <span class="text-xs font-body-md text-tertiary">M/S</span></span>
+                </div>
+                <div class="bg-surface-container border border-outline-variant/10 p-md rounded-lg hover:border-primary/30 transition-all">
+                    <span class="block font-label-mono text-[10px] text-tertiary mb-xs">ROD RATIO</span>
+                    <span id="rodRatioValue" class="font-data-display text-headline-md text-accent-gold">0.0 <span class="text-xs font-body-md text-tertiary">:1</span></span>
+                    <span class="block font-label-mono text-[9px] text-tertiary mt-1">Min 1.6 for daily</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-md">
+                <div class="bg-surface-container border border-outline-variant/10 p-md rounded-lg">
+                    <span class="block font-label-mono text-[10px] text-tertiary mb-xs">AIR VELOCITY @ SEAT</span>
+                    <span id="airVelValue" class="font-data-display text-headline-md text-on-surface">0.0 <span class="text-xs font-body-md text-tertiary">M/S</span></span>
+                </div>
+                <div class="bg-surface-container border border-outline-variant/10 p-md rounded-lg">
+                    <span class="block font-label-mono text-[10px] text-tertiary mb-xs">EST. OPTIMAL JETTING</span>
+                    <span id="jettingValue" class="font-data-display text-headline-md text-primary">#0 <span class="text-xs font-body-md text-tertiary">MAIN</span></span>
+                </div>
+                <div class="bg-surface-container border border-outline-variant/10 p-md rounded-lg">
+                    <span class="block font-label-mono text-[10px] text-tertiary mb-xs">SPECIFIC OUTPUT</span>
+                    <span id="specOutputValue" class="font-data-display text-headline-md text-on-surface">0.0 <span class="text-xs font-body-md text-tertiary">HP/L</span></span>
+                </div>
+            </div>
+
+            <div class="bg-surface-container-low rounded-xl border border-outline-variant/10 p-md">
+                <div class="flex items-center justify-between mb-md">
+                    <h3 class="font-label-mono text-label-mono text-on-surface-variant uppercase flex items-center gap-base">
+                        <span class="material-symbols-outlined text-sm">history</span>
+                        Simulation History
+                    </h3>
+                    <button id="clearHistoryBtn" class="text-[10px] font-label-mono text-tertiary hover:text-primary transition-colors flex items-center gap-xs">
+                        <span class="material-symbols-outlined text-sm">delete</span> CLEAR
+                    </button>
+                </div>
+                <div id="historyList" class="space-y-base max-h-48 overflow-y-auto"></div>
+                <div id="noHistoryMsg" class="text-center py-md">
+                    <span class="font-label-mono text-[11px] text-tertiary">No saved simulations yet. Run a calculation to save it here.</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="w-full bottom-0 bg-surface-container-lowest border-t border-outline-variant/10 mt-xl">
+        <div class="flex flex-col md:flex-row justify-between items-center px-margin-mobile md:px-margin-desktop py-base w-full gap-md max-w-[1280px] mx-auto">
+            <div class="flex items-center gap-md">
+                <span class="font-headline-md text-headline-md text-on-surface">AP<span class="text-primary">.</span>Performance</span>
+                <p class="font-label-mono text-label-mono text-on-surface-variant">© 2026 Adi Prass | Engine Simulation Lab</p>
+            </div>
+            <div class="flex gap-lg font-label-mono text-[10px] text-tertiary">
+                <span>PHYSICS ENGINE</span>
+                <span>|</span>
+                <span>4-STROKE MODEL</span>
+                <span>|</span>
+                <span>REV: 2026.06</span>
+            </div>
+        </div>
+    </footer>
+
+    <div id="toast" class="fixed bottom-6 right-6 bg-surface-container-highest border border-outline-variant/30 rounded-lg px-md py-base shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-[100] flex items-center gap-sm">
+        <span id="toastIcon" class="material-symbols-outlined text-primary text-sm">check_circle</span>
+        <span id="toastMsg" class="font-label-mono text-[12px] text-on-surface"></span>
+    </div>
+
+    <script src="src/scripts/engine.js"></script>
+</body>
+</html>

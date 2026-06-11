@@ -1,0 +1,80 @@
+/* Material Symbols */
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Dyno grid background */
+.dyno-grid-bg {
+    background-image: linear-gradient(rgba(127, 131, 134, 0.08) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(127, 131, 134, 0.08) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+/* Accent clip */
+.accent-clip {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
+}
+
+/* Progress segments */
+.progress-segment {
+    height: 8px;
+    width: 4px;
+    background-color: #333535;
+    transition: all 0.3s ease;
+}
+.progress-segment.active {
+    background-color: #ff544b;
+    box-shadow: 0 0 8px #ff544b;
+}
+.progress-segment.warning {
+    background-color: #f0a500;
+    box-shadow: 0 0 6px #f0a500;
+}
+.progress-segment.danger {
+    background-color: #ff4444;
+    box-shadow: 0 0 6px #ff4444;
+}
+
+/* Pulse glow */
+@keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 4px #ff544b; }
+    50% { box-shadow: 0 0 16px #ff544b, 0 0 24px rgba(255, 84, 75, 0.4); }
+}
+.pulse-glow {
+    animation: pulse-glow 2s infinite;
+}
+
+/* Slide in */
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.slide-in {
+    animation: slideIn 0.3s ease-out;
+}
+
+/* Number input spinners */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    opacity: 1;
+    height: 30px;
+}
+
+/* Canvas */
+canvas {
+    image-rendering: auto;
+}
+
+/* Glass panel */
+.glass-panel {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Navigation link transition */
+.nav-link {
+    transition: all 0.2s ease;
+}
+.nav-link:hover {
+    color: #ffb4ab;
+}

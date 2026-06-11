@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>AP PERFORMANCE | Injector Calculator</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries">
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800&family=Open+Sans:wght@400;600&family=JetBrains+Mono:wght@500;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..900&family=Open+Sans:wght@100..900&family=Raleway:wght@100..900&display=swap" rel="stylesheet">
+    <script src="src/styles/tailwind.js"></script>
+    <style src="src/styles/main.css"></style>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container">
+    <header class="w-full top-0 sticky bg-surface/90 backdrop-blur-md border-b border-outline-variant/20 z-50 glass-panel">
+        <div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop py-sm flex items-center justify-between">
+            <div class="flex items-center gap-md">
+                <div class="w-8 h-8 bg-primary-container rounded flex items-center justify-center pulse-glow">
+                    <span class="material-symbols-outlined text-on-primary-container text-sm">bolt</span>
+                </div>
+                <span class="font-headline-md text-headline-md text-on-surface tracking-tight">AP<span class="text-primary">.</span>PERFORMANCE</span>
+            </div>
+            <div class="flex items-center gap-sm">
+                <a href="index.html" class="nav-link hidden sm:flex items-center gap-xs bg-surface-container-highest px-3 py-1 rounded-full border border-outline-variant/20 text-[10px] font-label-mono text-tertiary hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined text-sm">analytics</span> ENGINE
+                </a>
+                <a href="injector.html" class="nav-link hidden sm:flex items-center gap-xs bg-primary-container/20 px-3 py-1 rounded-full border border-primary/30 text-[10px] font-label-mono text-primary transition-colors">
+                    <span class="material-symbols-outlined text-sm">science</span> INJECTOR
+                </a>
+                <a href="camshaft.html" class="nav-link hidden sm:flex items-center gap-xs bg-surface-container-highest px-3 py-1 rounded-full border border-outline-variant/20 text-[10px] font-label-mono text-tertiary hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-sm">precision_manufacturing</span> CAMSHAFT
+                </a>
+                <div class="hidden sm:flex items-center gap-xs bg-surface-container-highest px-3 py-1 rounded-full border border-outline-variant/20">
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                    <span class="font-label-mono text-[10px] text-tertiary">SYSTEM ONLINE</span>
+                </div>
+                <button id="themeToggle" class="p-2 rounded-full hover:bg-surface-container-highest transition-colors" title="Toggle unit system">
+                    <span class="material-symbols-outlined text-secondary text-sm">swap_horiz</span>
+                </button>
+                <button id="saveSetupBtn" class="p-2 rounded-full hover:bg-surface-container-highest transition-colors" title="Save current setup">
+                    <span class="material-symbols-outlined text-secondary text-sm">save</span>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Nav -->
+        <div class="flex sm:hidden items-center gap-sm px-margin-mobile pb-sm">
+            <a href="?calc=engine" class="nav-link flex-1 text-center bg-surface-container-highest px-3 py-2 rounded-lg border border-outline-variant/20 text-[10px] font-label-mono text-tertiary">
+                <span class="material-symbols-outlined text-sm align-middle">analytics</span> ENGINE CALC
+            </a>
+            <a href="?calc=injector" class="nav-link flex-1 text-center bg-primary-container/20 px-3 py-2 rounded-lg border border-primary/30 text-[10px] font-label-mono text-primary">
+                <span class="material-symbols-outlined text-sm align-middle">science</span> INJECTOR CALC
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop py-lg grid grid-cols-1 md:grid-cols-12 gap-gutter">
+        <div class="md:col-span-12 mb-md flex flex-col md:flex-row md:items-end justify-between border-l-4 border-primary pl-md slide-in">
+            <div>
+                <h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">INJECTOR<span class="text-primary"> CALCULATOR</span></h1>
+                <p class="font-label-mono text-[11px] text-tertiary mt-xs uppercase tracking-wider">Fuel System Sizing & Flow Analysis</p>
+            </div>
+            <div class="mt-base md:mt-0 flex gap-base flex-wrap">
+                <span id="statusBadge" class="bg-surface-container-highest px-3 py-1 rounded text-xs font-label-mono text-secondary border border-outline-variant/30 flex items-center gap-xs">
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> STATUS: READY
+                </span>
+                <span class="bg-surface-container-highest px-3 py-1 rounded text-xs font-label-mono text-secondary border border-outline-variant/30">VER: 1.0.0-STABLE</span>
+                <span id="unitBadge" class="bg-surface-container-highest px-3 py-1 rounded text-xs font-label-mono text-accent-gold border border-outline-variant/30">UNITS: METRIC</span>
+            </div>
+        </div>
+
+        <!-- Left Column: Inputs -->
+        <section class="md:col-span-5 space-y-gutter">
+            <h2 class="sr-only">Injector Sizing Inputs</h2>
+
+            <!-- Engine Power Input -->
+            <div class="bg-surface-container-low border border-outline-variant/20 rounded-lg overflow-hidden flex flex-col">
+                <div class="bg-surface-container-highest px-md py-base border-b border-outline-variant/20 flex items-center justify-between">
+                    <span class="font-headline-md text-headline-md text-on-surface flex items-center gap-xs">
+                        <span class="material-symbols-outlined text-primary text-sm">bolt</span>
+                        Engine Power
+                    </span>
+                    <span class="font-label-mono text-[10px] text-tertiary">POWER_SPEC</span>
+                </div>
+                <div class="p-md space-y-md">
+                    <div class="grid grid-cols-2 gap-md">
+                        <div class="space-y-xs">
+                            <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase" id="powerLabel">Target HP</label>
+                            <input id="powerInput" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display text-data-display p-base rounded-md outline-none transition-all" placeholder="0.0" step="0.1" type="number" value="0">
+                            <div class="flex justify-between text-[10px] font-label-mono text-primary/70 px-1 mt-1"><span>PER CYLINDER OR TOTAL</span></div>
+                        </div>
+                        <div class="space-y-xs">
+                            <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase">Cylinders</label>
+                            <select id="cylCountInjector" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display text-data-display p-base rounded-md outline-none transition-all appearance-none cursor-pointer">
+                                <option value="1" selected>1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="6">6</option>
+                                <option value="8">8</option>
+                                <option value="10">10</option>
+                                <option value="12">12</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="space-y-xs">
+                        <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase">Power Mode</label>
+                        <div class="flex gap-md">
+                            <label class="flex items-center gap-xs cursor-pointer">
+                                <input type="radio" name="powerMode" value="total" checked class="accent-primary-container">
+                                <span class="font-label-mono text-[12px] text-on-surface">Total Engine HP</span>
+                            </label>
+                            <label class="flex items-center gap-xs cursor-pointer">
+                                <input type="radio" name="powerMode" value="perCylinder" class="accent-primary-container">
+                                <span class="font-label-mono text-[12px] text-on-surface">HP per Cylinder</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fuel System Config -->
+            <div class="bg-surface-container-low border border-outline-variant/20 rounded-lg overflow-hidden flex flex-col">
+                <div class="bg-surface-container-highest px-md py-base border-b border-outline-variant/20 flex items-center justify-between">
+                    <span class="font-headline-md text-headline-md text-on-surface flex items-center gap-xs">
+                        <span class="material-symbols-outlined text-primary text-sm">science</span>
+                        Fuel Configuration
+                    </span>
+                    <span class="font-label-mono text-[10px] text-tertiary">FUEL_SPEC</span>
+                </div>
+                <div class="p-md space-y-md">
+                    <div class="grid grid-cols-2 gap-md">
+                        <div class="space-y-xs">
+                            <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase">Fuel Type</label>
+                            <select id="fuelTypeInjector" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display text-data-display p-base rounded-md outline-none transition-all appearance-none cursor-pointer">
+                                <option value="gasoline" selected>Gasoline</option>
+                                <option value="e85">E85</option>
+                                <option value="methanol">Methanol</option>
+                                <option value="diesel">Diesel</option>
+                                <option value="e100">Ethanol</option>
+                                <option value="cng">CNG</option>
+                            </select>
+                        </div>
+                        <div class="space-y-xs">
+                            <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase">Target AFR</label>
+                            <input id="afrInput" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display text-data-display p-base rounded-md outline-none transition-all" placeholder="12.5" step="0.1" type="number" value="12.5">
+                            <div class="flex justify-between text-[10px] font-label-mono text-primary/70 px-1 mt-1"><span id="afrSuggestion">STOICH: 14.7:1</span></div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-md">
+                        <div class="space-y-xs">
+                            <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase">BSFC</label>
+                            <input id="bsfcInput" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display text-data-display p-base rounded-md outline-none transition-all" placeholder="0.50" step="0.01" type="number" value="0.50">
+                            <div class="flex justify-between text-[10px] font-label-mono text-tertiary px-1"><span id="bsfcUnit">LB/HP·HR</span></div>
+                        </div>
+                        <div class="space-y-xs">
+                            <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase">Max Duty Cycle (%)</label>
+                            <input id="dutyInput" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display text-data-display p-base rounded-md outline-none transition-all" placeholder="80" step="1" type="number" value="80" min="50" max="95">
+                            <div class="flex justify-between text-[10px] font-label-mono text-tertiary px-1"><span>RECOMMENDED: 80%</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fuel Pressure Card -->
+            <div class="bg-surface-container-low border border-outline-variant/20 rounded-lg overflow-hidden flex flex-col">
+                <div class="bg-surface-container-highest px-md py-base border-b border-outline-variant/20 flex items-center justify-between">
+                    <span class="font-headline-md text-headline-md text-on-surface flex items-center gap-xs">
+                        <span class="material-symbols-outlined text-primary text-sm">pressure</span>
+                        Fuel Pressure
+                    </span>
+                    <span class="font-label-mono text-[10px] text-tertiary">PRESSURE_SPEC</span>
+                </div>
+                <div class="p-md space-y-md">
+                    <div class="grid grid-cols-2 gap-md">
+                        <div class="space-y-xs">
+                            <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase">Rated Pressure (bar)</label>
+                            <input id="ratedPressureInput" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display text-data-display p-base rounded-md outline-none transition-all" placeholder="3.0" step="0.1" type="number" value="3.0">
+                            <div class="flex justify-between text-[10px] font-label-mono text-tertiary px-1"><span>TYPICAL: 3.0 BAR</span></div>
+                        </div>
+                        <div class="space-y-xs">
+                            <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase">Actual Pressure (bar)</label>
+                            <input id="actualPressureInput" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display text-data-display p-base rounded-md outline-none transition-all" placeholder="3.0" step="0.1" type="number" value="3.0">
+                            <div class="flex justify-between text-[10px] font-label-mono text-tertiary px-1"><span>YOUR SYSTEM PRESSURE</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-md pt-base">
+                <button id="resetBtn" class="flex-1 bg-surface-container-highest border border-outline-variant text-on-surface font-bold py-md px-lg rounded transition-all active:scale-95 hover:bg-surface-bright flex items-center justify-center gap-sm">
+                    <span class="material-symbols-outlined">restart_alt</span>
+                    RESET
+                </button>
+                <button id="calculateBtn" class="flex-[2] bg-primary-container text-on-primary-container font-extrabold py-md px-lg rounded accent-clip transition-all active:scale-95 hover:opacity-90 flex items-center justify-center gap-sm shadow-lg shadow-primary-container/20">
+                    <span class="material-symbols-outlined">analytics</span>
+                    CALCULATE INJECTOR
+                </button>
+            </div>
+        </section>
+
+        <!-- Right Column: Results -->
+        <section class="md:col-span-7 space-y-gutter relative">
+            <h2 class="sr-only">Injector Analysis</h2>
+
+            <div id="resultsPanel" class="bg-black/40 dyno-grid-bg border border-outline-variant/30 rounded-xl p-lg relative overflow-hidden transition-all duration-300">
+                <div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-lg relative z-10">
+                    <!-- Injector Size -->
+                    <div class="flex flex-col border-l border-primary/30 pl-md slide-in sm:col-span-2">
+                        <span class="font-label-mono text-label-mono text-tertiary uppercase">Required Injector Flow Rate</span>
+                        <div class="flex items-baseline gap-sm flex-wrap">
+                            <span id="injectorCC" class="font-data-display text-3xl sm:text-4xl md:text-5xl text-primary tracking-tighter">0.0</span>
+                            <span class="font-label-mono text-headline-md text-secondary">CC/MIN</span>
+                            <span class="font-label-mono text-headline-md text-tertiary mx-sm">|</span>
+                            <span id="injectorLB" class="font-data-display text-3xl sm:text-4xl md:text-5xl text-on-surface tracking-tighter">0.0</span>
+                            <span class="font-label-mono text-headline-md text-secondary">LB/HR</span>
+                        </div>
+                        <span id="injectorNote" class="text-[10px] font-label-mono text-tertiary mt-1">Per injector · at rated pressure</span>
+                    </div>
+                    <!-- Fuel Flow -->
+                    <div class="flex flex-col border-l border-primary/30 pl-md slide-in">
+                        <span class="font-label-mono text-label-mono text-tertiary uppercase">Total Fuel Flow</span>
+                        <div class="flex items-baseline gap-xs">
+                            <span id="totalFuelFlow" class="font-data-display text-3xl sm:text-4xl md:text-5xl text-on-surface tracking-tighter">0.0</span>
+                            <span class="font-label-mono text-headline-md text-secondary">L/HR</span>
+                        </div>
+                        <span id="totalFuelGal" class="text-[10px] font-label-mono text-tertiary mt-[-4px]">0.0 GAL/HR</span>
+                    </div>
+                    <!-- HP per Injector -->
+                    <div class="flex flex-col border-l border-primary/30 pl-md slide-in">
+                        <span class="font-label-mono text-label-mono text-tertiary uppercase">HP Support per Injector</span>
+                        <div class="flex items-baseline gap-xs">
+                            <span id="hpPerInjector" class="font-data-display text-3xl sm:text-4xl md:text-5xl text-accent-gold tracking-tighter">0.0</span>
+                            <span class="font-label-mono text-headline-md text-secondary">HP</span>
+                        </div>
+                        <span id="hpSafetyNote" class="text-[10px] font-label-mono text-tertiary mt-[-4px]">at specified duty cycle</span>
+                    </div>
+                </div>
+
+                <!-- Duty Cycle Visual -->
+                <div class="mt-lg space-y-sm">
+                    <div class="flex justify-between items-center">
+                        <span class="font-label-mono text-[10px] text-tertiary uppercase">Duty Cycle Utilization</span>
+                        <span id="dutyPercent" class="font-label-mono text-[10px] text-primary">0%</span>
+                    </div>
+                    <div class="w-full bg-surface-container-highest rounded-full h-3 overflow-hidden">
+                        <div id="dutyBar" class="duty-bar bg-primary h-full rounded-full" style="width: 0%;"></div>
+                    </div>
+                    <div class="flex justify-between text-[9px] font-label-mono text-tertiary">
+                        <span>0%</span>
+                        <span>50%</span>
+                        <span>80% (Max Safe)</span>
+                        <span>100%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detail Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-md">
+                <div class="bg-surface-container border border-outline-variant/10 p-md rounded-lg hover:border-primary/30 transition-all">
+                    <span class="block font-label-mono text-[10px] text-tertiary mb-xs">BSFC VALUE</span>
+                    <span id="bsfcResult" class="font-data-display text-headline-md text-on-surface">0.50 <span class="text-xs font-body-md text-tertiary">LB/HP·HR</span></span>
+                </div>
+                <div class="bg-surface-container border border-outline-variant/10 p-md rounded-lg hover:border-primary/30 transition-all">
+                    <span class="block font-label-mono text-[10px] text-tertiary mb-xs">STOICHIOMETRIC AFR</span>
+                    <span id="stoichResult" class="font-data-display text-headline-md text-on-surface">14.7 <span class="text-xs font-body-md text-tertiary">:1</span></span>
+                </div>
+                <div class="bg-surface-container border border-outline-variant/10 p-md rounded-lg hover:border-primary/30 transition-all">
+                    <span class="block font-label-mono text-[10px] text-tertiary mb-xs">FUEL FLOW @ PEAK</span>
+                    <span id="fuelFlowPeak" class="font-data-display text-headline-md text-primary">0.0 <span class="text-xs font-body-md text-tertiary">CC/INJ</span></span>
+                </div>
+            </div>
+
+            <!-- Additional Info -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-md">
+                <div class="bg-surface-container border border-outline-variant/10 p-md rounded-lg">
+                    <span class="block font-label-mono text-[10px] text-tertiary mb-xs">PRESSURE CORRECTION FACTOR</span>
+                    <span id="pressureFactor" class="font-data-display text-headline-md text-on-surface">1.00 <span class="text-xs font-body-md text-tertiary">x</span></span>
+                </div>
+                <div class="bg-surface-container border border-outline-variant/10 p-md rounded-lg">
+                    <span class="block font-label-mono text-[10px] text-tertiary mb-xs">RECOMMENDED INJECTOR</span>
+                    <span id="recommendedInjector" class="font-data-display text-headline-md text-accent-gold">- <span class="text-xs font-body-md text-tertiary">CC</span></span>
+                </div>
+            </div>
+
+            <!-- History -->
+            <div class="bg-surface-container-low rounded-xl border border-outline-variant/10 p-md">
+                <div class="flex items-center justify-between mb-md">
+                    <h3 class="font-label-mono text-label-mono text-on-surface-variant uppercase flex items-center gap-base">
+                        <span class="material-symbols-outlined text-sm">history</span>
+                        Calculation History
+                    </h3>
+                    <button id="clearHistoryBtn" class="text-[10px] font-label-mono text-tertiary hover:text-primary transition-colors flex items-center gap-xs">
+                        <span class="material-symbols-outlined text-sm">delete</span> CLEAR
+                    </button>
+                </div>
+                <div id="historyList" class="space-y-base max-h-48 overflow-y-auto">
+                </div>
+                <div id="noHistoryMsg" class="text-center py-md">
+                    <span class="font-label-mono text-[11px] text-tertiary">No calculations yet. Enter values and calculate.</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="w-full bottom-0 bg-surface-container-lowest border-t border-outline-variant/10 mt-xl">
+        <div class="flex flex-col md:flex-row justify-between items-center px-margin-mobile md:px-margin-desktop py-base w-full gap-md max-w-[1280px] mx-auto">
+            <div class="flex items-center gap-md">
+                <span class="font-headline-md text-headline-md text-on-surface">AP<span class="text-primary">.</span>Performance</span>
+                <p class="font-label-mono text-label-mono text-on-surface-variant">© 2026 Adi Prass | Injector Sizing Tool</p>
+            </div>
+            <div class="flex gap-lg font-label-mono text-[10px] text-tertiary">
+                <span>FUEL SYSTEM LAB</span>
+                <span>|</span>
+                <span>INJECTOR CALC V1</span>
+                <span>|</span>
+                <span>REV: 2026.06</span>
+            </div>
+        </div>
+    </footer>
+
+    <div id="toast" class="fixed bottom-6 right-6 bg-surface-container-highest border border-outline-variant/30 rounded-lg px-md py-base shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-[100] flex items-center gap-sm">
+        <span id="toastIcon" class="material-symbols-outlined text-primary text-sm">check_circle</span>
+        <span id="toastMsg" class="font-label-mono text-[12px] text-on-surface"></span>
+    </div>
+
+    <script src="src/scripts/injector.js"></script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP PERFORMANCE | Camshaft Calculator</title>
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800&family=Open+Sans:wght@400;600&family=JetBrains+Mono:wght@500;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..900&family=Open+Sans:wght@100..900&family=Raleway:wght@100..900&display=swap" rel="stylesheet">
+    <script src="src/styles/tailwind.js"></script>
+    <style src="src/styles/main.css"></style>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container">
+
+    <!-- Header (sama seperti engine calculator, hanya link aktif berbeda) -->
+    <header class="w-full top-0 sticky bg-surface/90 backdrop-blur-md border-b border-outline-variant/20 z-50 glass-panel">
+        <div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop py-sm flex items-center justify-between">
+            <div class="flex items-center gap-md">
+                <div class="w-8 h-8 bg-primary-container rounded flex items-center justify-center pulse-glow">
+                    <span class="material-symbols-outlined text-on-primary-container text-sm">bolt</span>
+                </div>
+                <span class="font-headline-md text-headline-md text-on-surface tracking-tight">AP<span class="text-primary">.</span>PERFORMANCE</span>
+            </div>
+            <div class="flex items-center gap-sm">
+                <a href="index.html" class="nav-link hidden sm:flex items-center gap-xs bg-surface-container-highest px-3 py-1 rounded-full border border-outline-variant/20 text-[10px] font-label-mono text-tertiary hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined text-sm">analytics</span> ENGINE
+                </a>
+                <a href="injector.html" class="nav-link hidden sm:flex items-center gap-xs bg-surface-container-highest px-3 py-1 rounded-full border border-outline-variant/20 text-[10px] font-label-mono text-tertiary hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined text-sm">science</span> INJECTOR
+                </a>
+                <a href="camshaft.html" class="nav-link hidden sm:flex items-center gap-xs bg-primary-container/20 px-3 py-1 rounded-full border border-primary/30 text-[10px] font-label-mono text-primary transition-colors">
+                    <span class="material-symbols-outlined text-sm">precision_manufacturing</span> CAMSHAFT
+                </a>
+                <div class="hidden sm:flex items-center gap-xs bg-surface-container-highest px-3 py-1 rounded-full border border-outline-variant/20">
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                    <span class="font-label-mono text-[10px] text-tertiary">SYSTEM ONLINE</span>
+                </div>
+                <button id="themeToggle" class="p-2 rounded-full hover:bg-surface-container-highest transition-colors" title="Toggle unit system">
+                    <span class="material-symbols-outlined text-secondary text-sm">swap_horiz</span>
+                </button>
+                <button id="saveSetupBtn" class="p-2 rounded-full hover:bg-surface-container-highest transition-colors" title="Save current setup">
+                    <span class="material-symbols-outlined text-secondary text-sm">save</span>
+                </button>
+            </div>
+        </div>
+        <div class="flex sm:hidden items-center gap-sm px-margin-mobile pb-sm">
+            <a href="index.html" class="nav-link flex-1 text-center bg-surface-container-highest px-3 py-2 rounded-lg border border-outline-variant/20 text-[10px] font-label-mono text-tertiary">
+                ENGINE
+            </a>
+            <a href="injector.html" class="nav-link flex-1 text-center bg-surface-container-highest px-3 py-2 rounded-lg border border-outline-variant/20 text-[10px] font-label-mono text-tertiary">
+                INJECTOR
+            </a>
+            <a href="camshaft.html" class="nav-link flex-1 text-center bg-primary-container/20 px-3 py-2 rounded-lg border border-primary/30 text-[10px] font-label-mono text-primary">
+                CAMSHAFT
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop py-lg grid grid-cols-1 md:grid-cols-12 gap-gutter">
+        <div class="md:col-span-12 mb-md flex flex-col md:flex-row md:items-end justify-between border-l-4 border-primary pl-md slide-in">
+            <div>
+                <h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">CAMSHAFT<span class="text-primary"> CALCULATOR</span></h1>
+                <p class="font-label-mono text-[11px] text-tertiary mt-xs uppercase tracking-wider">Graham Bell Based Timing & Lift Specs</p>
+            </div>
+            <div class="mt-base md:mt-0 flex gap-base flex-wrap">
+                <span id="statusBadge" class="bg-surface-container-highest px-3 py-1 rounded text-xs font-label-mono text-secondary border border-outline-variant/30 flex items-center gap-xs">
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> STATUS: READY
+                </span>
+                <span class="bg-surface-container-highest px-3 py-1 rounded text-xs font-label-mono text-secondary border border-outline-variant/30">VER: 1.0.0</span>
+            </div>
+        </div>
+
+        <!-- Left Column: Inputs -->
+        <section class="md:col-span-5 space-y-gutter">
+            <h2 class="sr-only">Camshaft Inputs</h2>
+
+            <div class="bg-surface-container-low border border-outline-variant/20 rounded-lg overflow-hidden flex flex-col">
+                <div class="bg-surface-container-highest px-md py-base border-b border-outline-variant/20 flex items-center justify-between">
+                    <span class="font-headline-md text-headline-md text-on-surface flex items-center gap-xs">
+                        <span class="material-symbols-outlined text-primary text-sm">architecture</span>
+                        Engine Specs
+                    </span>
+                    <span class="font-label-mono text-[10px] text-tertiary">BASE_SPEC</span>
+                </div>
+                <div class="p-md grid grid-cols-2 gap-md">
+                    <div class="space-y-xs">
+                        <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase">IN Valve Dia (mm)</label>
+                        <input id="inValveCamInput" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display text-data-display p-base rounded-md outline-none transition-all" placeholder="0.0" step="0.1" type="number" value="0">
+                    </div>
+                    <div class="space-y-xs">
+                        <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase">EX Valve Dia (mm)</label>
+                        <input id="exValveCamInput" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display text-data-display p-base rounded-md outline-none transition-all" placeholder="0.0" step="0.1" type="number" value="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-surface-container-low border border-outline-variant/20 rounded-lg overflow-hidden flex flex-col">
+                <div class="bg-surface-container-highest px-md py-base border-b border-outline-variant/20 flex items-center justify-between">
+                    <span class="font-headline-md text-headline-md text-on-surface flex items-center gap-xs">
+                        <span class="material-symbols-outlined text-primary text-sm">tune</span>
+                        Usage Profile
+                    </span>
+                    <span class="font-label-mono text-[10px] text-tertiary">CAM_PROFILE</span>
+                </div>
+                <div class="p-md space-y-md">
+                    <div class="space-y-xs">
+                        <label class="block font-label-mono text-label-mono text-on-surface-variant uppercase">Application</label>
+                        <select id="profileSelect" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display text-data-display p-base rounded-md outline-none transition-all appearance-none cursor-pointer">
+                            <option value="daily">Daily Use</option>
+                            <option value="semi">Semi Racing</option>
+                            <option value="full">Full Race</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-md pt-base">
+                <button id="resetBtn" class="flex-1 bg-surface-container-highest border border-outline-variant text-on-surface font-bold py-md px-lg rounded transition-all active:scale-95 hover:bg-surface-bright flex items-center justify-center gap-sm">
+                    <span class="material-symbols-outlined">restart_alt</span>
+                    RESET
+                </button>
+                <button id="calculateBtn" class="flex-[2] bg-primary-container text-on-primary-container font-extrabold py-md px-lg rounded accent-clip transition-all active:scale-95 hover:opacity-90 flex items-center justify-center gap-sm shadow-lg shadow-primary-container/20">
+                    <span class="material-symbols-outlined">precision_manufacturing</span>
+                    CALCULATE CAMSHAFT
+                </button>
+            </div>
+        </section>
+
+        <!-- Right Column: Results -->
+        <section class="md:col-span-7 space-y-gutter relative">
+            <h2 class="sr-only">Camshaft Specification</h2>
+
+            <div id="resultsPanel" class="bg-black/40 dyno-grid-bg border border-outline-variant/30 rounded-xl p-lg relative overflow-hidden transition-all duration-300">
+                <div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+                <div class="grid grid-cols-2 gap-lg relative z-10">
+                    <div class="flex flex-col border-l border-primary/30 pl-md">
+                        <span class="font-label-mono text-label-mono text-tertiary uppercase">Intake Lift</span>
+                        <span id="inLift" class="font-data-display text-3xl sm:text-4xl text-on-surface tracking-tighter">0.00 mm</span>
+                    </div>
+                    <div class="flex flex-col border-l border-primary/30 pl-md">
+                        <span class="font-label-mono text-label-mono text-tertiary uppercase">Exhaust Lift</span>
+                        <span id="exLift" class="font-data-display text-3xl sm:text-4xl text-on-surface tracking-tighter">0.00 mm</span>
+                    </div>
+                    <div class="flex flex-col border-l border-primary/30 pl-md">
+                        <span class="font-label-mono text-label-mono text-tertiary uppercase">Intake OverLift</span>
+                        <span id="inOverLift" class="font-data-display text-3xl sm:text-4xl text-on-surface tracking-tighter">0.00 mm</span>
+                    </div>
+                    <div class="flex flex-col border-l border-primary/30 pl-md">
+                        <span class="font-label-mono text-label-mono text-tertiary uppercase">Exhaust OverLift</span>
+                        <span id="exOverLift" class="font-data-display text-3xl sm:text-4xl text-on-surface tracking-tighter">0.00 mm</span>
+                    </div>
+                </div>
+        </section>
+    </main>
+
+    <footer class="w-full bottom-0 bg-surface-container-lowest border-t border-outline-variant/10 mt-xl">
+        <div class="flex flex-col md:flex-row justify-between items-center px-margin-mobile md:px-margin-desktop py-base w-full gap-md max-w-[1280px] mx-auto">
+            <div class="flex items-center gap-md">
+                <span class="font-headline-md text-headline-md text-on-surface">AP<span class="text-primary">.</span>Performance</span>
+                <p class="font-label-mono text-label-mono text-on-surface-variant">© 2026 Adi Prass | Camshaft Design Lab</p>
+            </div>
+            <div class="flex gap-lg font-label-mono text-[10px] text-tertiary">
+                <span>GRAHAM BELL REFERENCE</span>
+                <span>|</span>
+                <span>CAM TIMING V1</span>
+            </div>
+        </div>
+    </footer>
+
+    <div id="toast" class="fixed bottom-6 right-6 bg-surface-container-highest border border-outline-variant/30 rounded-lg px-md py-base shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-[100] flex items-center gap-sm">
+        <span id="toastIcon" class="material-symbols-outlined text-primary text-sm">check_circle</span>
+        <span id="toastMsg" class="font-label-mono text-[12px] text-on-surface"></span>
+    </div>
+
+    <script src="src/scripts/camshaft.js"></script>
+</body>
+</html>
