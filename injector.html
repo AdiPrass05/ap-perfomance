@@ -4,11 +4,13 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>AP PERFORMANCE | Injector Calculator</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries">
-    </script>
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800&family=Open+Sans:wght@400;600&family=JetBrains+Mono:wght@500;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..900&family=Open+Sans:wght@100..900&family=Raleway:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ff544b">
     <script src="src/styles/tailwind.js"></script>
     <style src="src/styles/main.css"></style>
 </head>
@@ -40,9 +42,10 @@
                 </button>
             </div>
         </div>
+        <!-- Mobile Nav -->
         <div class="flex sm:hidden items-center gap-sm px-margin-mobile pb-sm">
             <a href="index.html" class="nav-link flex-1 text-center bg-surface-container/20 px-3 py-2 rounded-lg border border-primary/30 text-[10px] font-label-mono text-primary">ENGINE</a>
-            <a href="injector.html" class="nav-link flex-1 text-center bg-primary-container-highest px-3 py-2 rounded-lg border border-outline-variant/20 text-[10px] font-label-mono text-tertiary">INJECTOR</a>
+            <a href="injector.html" class="nav-link flex-1 text-center bg-primary-container/20 px-3 py-2 rounded-lg border border-primary/30 text-[10px] font-label-mono text-primary">INJECTOR</a>
             <a href="camshaft.html" class="nav-link flex-1 text-center bg-surface-container-highest px-3 py-2 rounded-lg border border-outline-variant/20 text-[10px] font-label-mono text-tertiary">CAMSHAFT</a>
         </div>
     </header>
@@ -274,24 +277,6 @@
                 <div class="bg-surface-container border border-outline-variant/10 p-md rounded-lg">
                     <span class="block font-label-mono text-[10px] text-tertiary mb-xs">RECOMMENDED INJECTOR</span>
                     <span id="recommendedInjector" class="font-data-display text-headline-md text-accent-gold">- <span class="text-xs font-body-md text-tertiary">CC</span></span>
-                </div>
-            </div>
-
-            <!-- History -->
-            <div class="bg-surface-container-low rounded-xl border border-outline-variant/10 p-md">
-                <div class="flex items-center justify-between mb-md">
-                    <h3 class="font-label-mono text-label-mono text-on-surface-variant uppercase flex items-center gap-base">
-                        <span class="material-symbols-outlined text-sm">history</span>
-                        Calculation History
-                    </h3>
-                    <button id="clearHistoryBtn" class="text-[10px] font-label-mono text-tertiary hover:text-primary transition-colors flex items-center gap-xs">
-                        <span class="material-symbols-outlined text-sm">delete</span> CLEAR
-                    </button>
-                </div>
-                <div id="historyList" class="space-y-base max-h-48 overflow-y-auto">
-                </div>
-                <div id="noHistoryMsg" class="text-center py-md">
-                    <span class="font-label-mono text-[11px] text-tertiary">No calculations yet. Enter values and calculate.</span>
                 </div>
             </div>
         </section>
