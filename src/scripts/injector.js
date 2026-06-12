@@ -10,7 +10,9 @@
             const calculateBtn = document.getElementById('calculateBtn');
             const resetBtn = document.getElementById('resetBtn');
             const saveSetupBtn = document.getElementById('saveSetupBtn');
+            const clearHistoryBtn = document.getElementById('clearHistoryBtn');
             const themeToggle = document.getElementById('themeToggle');
+            const historyList = document.getElementById('historyList');
             const noHistoryMsg = document.getElementById('noHistoryMsg');
             const statusBadge = document.getElementById('statusBadge');
             const unitBadge = document.getElementById('unitBadge');
@@ -207,6 +209,70 @@
                 afrSuggestion.textContent = 'STOICH: ' + fuel.stoich + ':1';
             }
 
+            function loadHistory() {
+                try {
+                    const stored = localStorage.getItem('ap_injector_history');
+                    if (stored) calcHistory = JSON.parse(stored);
+                } catch (e) { calcHistory = []; }
+                renderHistory();
+            }
+
+            function saveHistory() {
+                try {
+                    localStorage.setItem('ap_injector_history', JSON.stringify(calcHistory));
+                } catch (e) {
+                    showToast('Storage full. Clearing old entries.', 'warning', 3000);
+                    calcHistory = calcHistory.slice(-5);
+                    localStorage.setItem('ap_injector_history', JSON.stringify(calcHistory));
+                }
+                renderHistory();
+            }
+
+            function addToHistory(inputs, results) {
+                const entry = {
+                    id: Date.now(),
+                    power: inputs.totalPower,
+                    cylCount: inputs.cylCount,
+                    fuelType: inputs.fuelType,
+                    injectorCC: results.injectorCcMinActual,
+                    injectorLB: results.injectorLbHrActual,
+                    recommended: results.recommended,
+                    timestamp: new Date().toISOString(),
+                };
+                calcHistory.unshift(entry);
+                if (calcHistory.length > MAX_HISTORY) calcHistory = calcHistory.slice(0, MAX_HISTORY);
+                saveHistory();
+            }
+
+            function renderHistory() {
+                if (calcHistory.length === 0) {
+                    historyList.innerHTML = '';
+                    noHistoryMsg.classList.remove('hidden');
+                    return;
+                }
+                noHistoryMsg.classList.add('hidden');
+                historyList.innerHTML = calcHistory.map((entry, index) => `
+                    <div class="flex items-center justify-between p-base bg-surface-container-lowest rounded border-l-2 ${index === 0 ? 'border-primary/40' : 'border-outline-variant/20'} cursor-pointer hover:bg-surface-container-high transition-all group slide-in"
+                         data-id="${entry.id}" onclick="window._restoreInjectorSetup(${entry.id})">
+                        <div class="flex flex-col">
+                            <span class="font-body-md text-on-surface group-hover:text-primary transition-colors">${entry.power} HP · ${entry.cylCount} Cyl</span>
+                            <span class="text-[9px] font-label-mono text-tertiary">${new Date(entry.timestamp).toLocaleDateString()} · ${entry.fuelType}</span>
+                        </div>
+                        <div class="flex gap-md font-label-mono text-xs items-center">
+                            <span class="text-primary font-bold">${entry.injectorCC} CC</span>
+                            <span class="text-secondary">Rec: ${entry.recommended} CC</span>
+                            <span class="material-symbols-outlined text-sm text-tertiary opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            function clearHistory() {
+                calcHistory = [];
+                saveHistory();
+                showToast('History cleared.', 'delete', 2000);
+            }
+
             window._restoreInjectorSetup = function(id) {
                 const entry = calcHistory.find(e => e.id === id);
                 if (!entry) return;
@@ -299,6 +365,7 @@
 
             resetBtn.addEventListener('click', resetAll);
             saveSetupBtn.addEventListener('click', saveCurrentSetup);
+            clearHistoryBtn.addEventListener('click', clearHistory);
             themeToggle.addEventListener('click', toggleUnits);
 
             fuelTypeSelect.addEventListener('change', () => {
