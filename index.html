@@ -4,13 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AP PERFORMANCE | Engine Performance Calculator</title>
-
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800&family=Open+Sans:wght@400;600&family=JetBrains+Mono:wght@500;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..900&family=Open+Sans:wght@100..900&family=Raleway:wght@100..900&display=swap" rel="stylesheet">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#ff544b">
     <script src="src/styles/tailwind.js"></script>
     <link rel="stylesheet" href="src/styles/styles.css">
 </head>
@@ -114,8 +111,7 @@
             <div class="bg-surface-container-low border border-outline-variant/20 rounded-lg overflow-hidden flex flex-col">
                 <div class="bg-surface-container-highest px-md py-base border-b border-outline-variant/20 flex items-center justify-between">
                     <span class="font-headline-md text-headline-md text-on-surface flex items-center gap-xs">
-                        <span class="material-symbols-outlined text-primary text-sm">architecture</span>
-                        Basic Geometry
+                        <span class="material-symbols-outlined text-primary text-sm">architecture</span>Basic Geometry
                     </span>
                     <span class="font-label-mono text-[10px] text-tertiary">CORE_SPECS</span>
                 </div>
@@ -146,8 +142,7 @@
             <div class="bg-surface-container-low border border-outline-variant/20 rounded-lg overflow-hidden flex flex-col">
                 <div class="bg-surface-container-highest px-md py-base border-b border-outline-variant/20 flex items-center justify-between">
                     <span class="font-headline-md text-headline-md text-on-surface flex items-center gap-xs">
-                        <span class="material-symbols-outlined text-primary text-sm">engineering</span>
-                        Valve Configuration
+                        <span class="material-symbols-outlined text-primary text-sm">engineering</span>Valve Configuration
                     </span>
                     <span class="font-label-mono text-[10px] text-tertiary">VALVE_TRAIN</span>
                 </div>
@@ -182,8 +177,7 @@
             <div class="bg-surface-container-low border border-outline-variant/20 rounded-lg overflow-hidden flex flex-col">
                 <div class="bg-surface-container-highest px-md py-base border-b border-outline-variant/20 flex items-center justify-between">
                     <span class="font-headline-md text-headline-md text-on-surface flex items-center gap-xs">
-                        <span class="material-symbols-outlined text-primary text-sm">settings_input_component</span>
-                        Inner Diameter of Valve Seat
+                        <span class="material-symbols-outlined text-primary text-sm">settings_input_component</span>Inner Diameter of Valve Seat
                     </span>
                     <span class="font-label-mono text-[10px] text-tertiary">SEAT_GEOMETRY</span>
                 </div>
@@ -238,6 +232,9 @@
                 </button>
             </div>
             <div class="flex gap-md">
+                <button id="quickCompareBtn" class="flex-1 bg-surface-container border border-outline-variant/30 text-secondary font-bold py-sm px-md rounded transition-all active:scale-95 hover:bg-surface-container-highest flex items-center justify-center gap-xs text-sm">
+                    <span class="material-symbols-outlined text-sm">compare_arrows</span>QUICK COMPARE
+                </button>
                 <button id="exportBtn" class="flex-1 bg-surface-container border border-outline-variant/30 text-secondary font-bold py-sm px-md rounded transition-all active:scale-95 hover:bg-surface-container-highest flex items-center justify-center gap-xs text-sm">
                     <span class="material-symbols-outlined text-sm">download</span>EXPORT REPORT
                 </button>
@@ -328,6 +325,22 @@
                 <div class="bg-surface-container border border-outline-variant/10 p-md rounded-lg">
                     <span class="block font-label-mono text-[10px] text-tertiary mb-xs">SPECIFIC OUTPUT</span>
                     <span id="specOutputValue" class="font-data-display text-headline-md text-on-surface">0.0 <span class="text-xs font-body-md text-tertiary">HP/L</span></span>
+                </div>
+            </div>
+
+            <div class="bg-surface-container-low rounded-xl border border-outline-variant/10 p-md">
+                <div class="flex items-center justify-between mb-md">
+                    <h3 class="font-label-mono text-label-mono text-on-surface-variant uppercase flex items-center gap-base">
+                        <span class="material-symbols-outlined text-sm">history</span>
+                        Simulation History
+                    </h3>
+                    <button id="clearHistoryBtn" class="text-[10px] font-label-mono text-tertiary hover:text-primary transition-colors flex items-center gap-xs">
+                        <span class="material-symbols-outlined text-sm">delete</span> CLEAR
+                    </button>
+                </div>
+                <div id="historyList" class="space-y-base max-h-48 overflow-y-auto"></div>
+                <div id="noHistoryMsg" class="text-center py-md">
+                    <span class="font-label-mono text-[11px] text-tertiary">No saved simulations yet. Run a calculation to save it here.</span>
                 </div>
             </div>
         </section>

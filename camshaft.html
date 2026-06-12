@@ -9,8 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800&family=Open+Sans:wght@400;600&family=JetBrains+Mono:wght@500;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..900&family=Open+Sans:wght@100..900&family=Raleway:wght@100..900&display=swap" rel="stylesheet">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#ff544b">    
     <script src="src/styles/tailwind.js"></script>
     <style src="src/styles/main.css"></style>
 </head>
@@ -42,14 +40,21 @@
                 <button id="themeToggle" class="p-2 rounded-full hover:bg-surface-container-highest transition-colors" title="Toggle unit system">
                     <span class="material-symbols-outlined text-secondary text-sm">swap_horiz</span>
                 </button>
+                <button id="saveSetupBtn" class="p-2 rounded-full hover:bg-surface-container-highest transition-colors" title="Save current setup">
+                    <span class="material-symbols-outlined text-secondary text-sm">save</span>
+                </button>
             </div>
         </div>
-        <!-- Mobile Nav -->
         <div class="flex sm:hidden items-center gap-sm px-margin-mobile pb-sm">
-        <!-- <div class="flex sm:hidden overflow-x-auto gap-2 px-4 pb-3"></div> --> 
-            <a href="index.html" class="nav-link flex-1 text-center bg-surface-container-highest px-3 py-2 rounded-lg border border-outline-variant/20 text-[10px] font-label-mono text-tertiary">ENGINE</a>
-            <a href="injector.html" class="nav-link flex-1 text-center bg-surface-container-highest px-3 py-2 rounded-lg border border-outline-variant/20 text-[10px] font-label-mono text-tertiary">INJECTOR</a>
-            <a href="camshaft.html" class="nav-link flex-1 text-center bg-primary-container/20 px-3 py-2 rounded-lg border border-primary/30 text-[10px] font-label-mono text-primary">CAMSHAFT</a>
+            <a href="index.html" class="nav-link flex-1 text-center bg-surface-container-highest px-3 py-2 rounded-lg border border-outline-variant/20 text-[10px] font-label-mono text-tertiary">
+                ENGINE
+            </a>
+            <a href="injector.html" class="nav-link flex-1 text-center bg-surface-container-highest px-3 py-2 rounded-lg border border-outline-variant/20 text-[10px] font-label-mono text-tertiary">
+                INJECTOR
+            </a>
+            <a href="camshaft.html" class="nav-link flex-1 text-center bg-primary-container/20 px-3 py-2 rounded-lg border border-primary/30 text-[10px] font-label-mono text-primary">
+                CAMSHAFT
+            </a>
         </div>
     </header>
 

@@ -9,10 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800&family=Open+Sans:wght@400;600&family=JetBrains+Mono:wght@500;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..900&family=Open+Sans:wght@100..900&family=Raleway:wght@100..900&display=swap" rel="stylesheet">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#ff544b">
     <script src="src/styles/tailwind.js"></script>
-    <style src="src/styles/main.css"></style>
+    <link rel="stylesheet" href="src/styles/styles.css">
 </head>
 <body class="bg-background text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container">
     <header class="w-full top-0 sticky bg-surface/90 backdrop-blur-md border-b border-outline-variant/20 z-50 glass-panel">
@@ -31,7 +29,7 @@
                     <span class="material-symbols-outlined text-sm">science</span> INJECTOR
                 </a>
                 <a href="camshaft.html" class="nav-link hidden sm:flex items-center gap-xs bg-surface-container-highest px-3 py-1 rounded-full border border-outline-variant/20 text-[10px] font-label-mono text-tertiary hover:text-primary transition-colors">
-                <span class="material-symbols-outlined text-sm">precision_manufacturing</span> CAMSHAFT
+                    <span class="material-symbols-outlined text-sm">precision_manufacturing</span> CAMSHAFT
                 </a>
                 <div class="hidden sm:flex items-center gap-xs bg-surface-container-highest px-3 py-1 rounded-full border border-outline-variant/20">
                     <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
@@ -44,11 +42,14 @@
         </div>
         <!-- Mobile Nav -->
         <div class="flex sm:hidden items-center gap-sm px-margin-mobile pb-sm">
-            <a href="index.html" class="nav-link flex-1 text-center bg-surface-container/20 px-3 py-2 rounded-lg border border-primary/30 text-[10px] font-label-mono text-primary">ENGINE</a>
+            <a href="index.html" class="nav-link flex-1 text-center bg-surface-container-highest px-3 py-2 rounded-lg border border-outline-variant/20 text-[10px] font-label-mono text-tertiary">ENGINE</a>
             <a href="injector.html" class="nav-link flex-1 text-center bg-primary-container/20 px-3 py-2 rounded-lg border border-primary/30 text-[10px] font-label-mono text-primary">INJECTOR</a>
             <a href="camshaft.html" class="nav-link flex-1 text-center bg-surface-container-highest px-3 py-2 rounded-lg border border-outline-variant/20 text-[10px] font-label-mono text-tertiary">CAMSHAFT</a>
         </div>
     </header>
+
+    <!-- Main content tidak berubah dari yang diberikan, hanya saya pastikan tidak ada kesalahan -->
+    <!-- ... (sama seperti yang diberikan) ... -->
 
     <main class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop py-lg grid grid-cols-1 md:grid-cols-12 gap-gutter">
         <div class="md:col-span-12 mb-md flex flex-col md:flex-row md:items-end justify-between border-l-4 border-primary pl-md slide-in">
