@@ -1,3 +1,4 @@
+// engine.js
 (function() {
     // DOM References
     const boreInput = document.getElementById('boreInput');
@@ -16,12 +17,11 @@
     const valveCountSelect = document.getElementById('valveCountSelect');
     const calculateBtn = document.getElementById('calculateBtn');
     const resetBtn = document.getElementById('resetBtn');
-    const saveSetupBtn = document.getElementById('saveSetupBtn');
     const quickCompareBtn = document.getElementById('quickCompareBtn');
     const exportBtn = document.getElementById('exportBtn');
     const clearHistoryBtn = document.getElementById('clearHistoryBtn');
     const themeToggle = document.getElementById('themeToggle');
-    const dynoChart = document.getElementById('dynoChart');
+    const dynoChartCanvas = document.getElementById('dynoChart');
     const chartOverlay = document.getElementById('chartOverlay');
     const historyList = document.getElementById('historyList');
     const noHistoryMsg = document.getElementById('noHistoryMsg');
@@ -40,6 +40,7 @@
     const maxInSeatLabel = document.getElementById('maxInSeatLabel');
     const maxExSeatLabel = document.getElementById('maxExSeatLabel');
 
+    // Output displays
     const dispValue = document.getElementById('dispValue');
     const dispUnit = document.getElementById('dispUnit');
     const dispCID = document.getElementById('dispCID');
@@ -57,7 +58,7 @@
     const jettingValue = document.getElementById('jettingValue');
     const specOutputValue = document.getElementById('specOutputValue');
 
-    let unitSystem = 'metric';
+    let unitSystem = 'metric'; // 'metric' or 'imperial'
     let simulationHistory = [];
     let lastResults = null;
     let compareData = null;
@@ -69,17 +70,18 @@
         cylCount: 1,
         cycleType: '4',
         fuelType: 'gasoline',
-        compRatio: 0,
+        compRatio: 11,
         rodLength: 0,
         inValve: 0,
         exValve: 0,
         inSeat: 0,
         exSeat: 0,
-        gasSpeed: 0,
-        ve: 0,
-        valveCount: 2, // default 2 valve
+        gasSpeed: 105,
+        ve: 90,
+        valveCount: 2,
     };
 
+    // Toast notification
     let toastTimeout;
     function showToast(message, icon = 'check_circle', duration = 2500) {
         clearTimeout(toastTimeout);
@@ -93,6 +95,7 @@
         }, duration);
     }
 
+    // Gather all input values
     function getInputValues() {
         return {
             bore: parseFloat(boreInput.value) || 0,
@@ -112,99 +115,119 @@
         };
     }
 
+    // Main calculation
     function calculatePerformance(inputs) {
         const bore = inputs.bore;
         const stroke = inputs.stroke;
         const cylCount = inputs.cylCount;
         const cycleType = inputs.cycleType;
-        const ve = inputs.ve / 100;
+        const ve = inputs.ve / 100;  // decimal
         const rodLength = inputs.rodLength;
         const inSeat = inputs.inSeat;
         const gasSpeed = inputs.gasSpeed;
         const compRatio = inputs.compRatio;
         const fuelType = inputs.fuelType;
+        const inValve = inputs.inValve;
+        const valveCount = inputs.valveCount;
 
-        const boreMm = bore;
-        const strokeMm = stroke;
-        const inSeatMm = inSeat;
-        let targetRpm = 0;
-        if (boreMm > 0 && strokeMm > 0 && inSeatMm > 0 && gasSpeed > 0) {
-            targetRpm = (gasSpeed * 30000 * Math.pow(inSeatMm, 2)) / (Math.pow(boreMm, 2) * strokeMm);
-        }
-        const maxPistonSpeedLimit = 25;
-        let maxRpm = 0;
-        if (strokeMm > 0) {
-            maxRpm = (maxPistonSpeedLimit * 30000) / strokeMm;
-        }
-
+        // Displacement
         const displacementCC = (Math.PI / 4) * Math.pow(bore, 2) * stroke * cylCount / 1000;
         const displacementL = displacementCC / 1000;
         const displacementCID = displacementCC * 0.0610237;
-        const pistonAreaCm2 = (Math.PI / 4) * Math.pow(bore / 10, 2);
-        const pistonSpeed = (2 * stroke / 1000 * targetRpm) / 60;
+
+        // Target RPM from gas speed and intake seat (Graham Bell)
+        let targetRpm = 0;
+        if (bore > 0 && stroke > 0 && inSeat > 0 && gasSpeed > 0) {
+            targetRpm = (gasSpeed * 30000 * Math.pow(inSeat, 2)) / (Math.pow(bore, 2) * stroke);
+        }
+
+        // Max RPM from piston speed limit (25 m/s)
+        const maxPistonSpeedLimit = 25;
+        let maxRpm = 0;
+        if (stroke > 0) {
+            maxRpm = (maxPistonSpeedLimit * 30000) / stroke;
+        }
+
+        // Air flow (CFM)
+        const strokesPerCycle = cycleType === '4' ? 2 : 1;
+        const cfm = (displacementCID * targetRpm * ve) / (3456 * strokesPerCycle);
+
+        // BMEP estimation (based on VE, compression, fuel)
+        const fuelFactors = { gasoline: 1.0, e85: 0.95, methanol: 1.05, diesel: 1.15 };
+        const fuelFactor = fuelFactors[fuelType] || 1.0;
+        const compFactor = 1 + (compRatio - 9) * 0.08;
+        // Base BMEP for a typical 2-valve engine ~10.5 bar at 100% VE, adjust for valve count
+        // 4-valve engines can achieve slightly higher BMEP (e.g., 10% more)
+        const valveFactor = valveCount === 4 ? 1.08 : 1.0;
+        let bmepBar = 10.5 * ve * compFactor * fuelFactor * valveFactor;
+        bmepBar = Math.max(8, Math.min(16, bmepBar));
+
+        // Power (HP) = (BMEP * L * RPM) / (2 * 60) * 100 * 0.00134102
+        let powerHP = 0;
+        if (targetRpm > 0) {
+            powerHP = (bmepBar * displacementL * targetRpm) / (2 * 60) * 100 * 0.00134102;
+        }
+        const powerKW = powerHP * 0.7457;
+
+        // Torque (lb-ft)
+        let torqueLbFt = 0;
+        if (targetRpm > 0) {
+            torqueLbFt = (powerHP * 5252) / targetRpm;
+        }
+        const torqueNm = torqueLbFt * 1.35582;
+
+        // Specific output (HP/L)
+        const specificOutput = displacementL > 0 ? powerHP / displacementL : 0;
+
+        // Piston speed at max RPM
+        const pistonSpeedMax = (2 * stroke / 1000 * maxRpm) / 60;
+
+        // Rod ratio
         const rodRatio = rodLength > 0 && stroke > 0 ? rodLength / stroke : 0;
+
+        // Air velocity at seat (calculated)
+        const pistonAreaCm2 = (Math.PI / 4) * Math.pow(bore / 10, 2);
         const inSeatAreaCm2 = (Math.PI / 4) * Math.pow(inSeat / 10, 2);
+        const pistonSpeed = (2 * stroke / 1000 * targetRpm) / 60;
         let calculatedGasSpeed = 0;
         if (inSeatAreaCm2 > 0) {
             calculatedGasSpeed = (pistonAreaCm2 * pistonSpeed * 100) / (inSeatAreaCm2 * 60);
         }
         const avgGasSpeed = (calculatedGasSpeed + gasSpeed) / 2;
 
-        const strokesPerCycle = cycleType === '4' ? 2 : 1;
-        const cfm = (displacementCID * targetRpm * ve) / (3456 * strokesPerCycle);
-
-        const fuelFactors = { gasoline: 1.0, e85: 0.95, methanol: 1.05, diesel: 1.15 };
-        const fuelFactor = fuelFactors[fuelType] || 1.0;
-        const compFactor = 1 + (compRatio - 9) * 0.08;
-        let bmepBar = 10.5 * ve * compFactor * fuelFactor;
-        bmepBar = Math.max(8, Math.min(16, bmepBar));
-
-        let powerHP = 0;
-        if (targetRpm > 0) {
-            powerHP = (bmepBar * displacementL * targetRpm) / (2 * 60) * 100 * 0.00134102;
-        }
-        const powerKW = powerHP * 0.7457;
-        let torqueLbFt = 0;
-        if (targetRpm > 0) {
-            torqueLbFt = (powerHP * 5252) / targetRpm;
-        }
-        const torqueNm = torqueLbFt * 1.35582;
-        const specificOutput = displacementL > 0 ? powerHP / displacementL : 0;
-        const pistonSpeedMax = (2 * stroke / 1000 * maxRpm) / 60;
+        // Jetting estimation (main jet size, very rough)
         const jetSize = Math.round(100 + (displacementCC * 0.2) + (targetRpm / 1000) * 3 + (compRatio - 9) * 5);
 
         return {
             displacementCC: Math.round(displacementCC * 10) / 10,
             displacementL: Math.round(displacementL * 1000) / 1000,
             displacementCID: Math.round(displacementCID * 10) / 10,
-            pistonSpeed: Math.round(pistonSpeed * 10) / 10,
-            pistonSpeedMax: Math.round(pistonSpeedMax * 10) / 10,
-            rodRatio: isNaN(rodRatio) ? 0 : Math.round(rodRatio * 100) / 100,
+            targetRpm: Math.round(targetRpm),
+            maxRpm: Math.round(maxRpm),
             cfm: Math.round(cfm * 10) / 10,
             bmepBar: Math.round(bmepBar * 10) / 10,
             powerHP: Math.round(powerHP * 10) / 10,
             powerKW: Math.round(powerKW * 10) / 10,
-            torqueLbFt: Math.round(torqueLbFt * 10) / 10,
-            torqueNm: Math.round(torqueNm * 10) / 10,
+            torqueLbFt: isNaN(torqueLbFt) ? 0 : Math.round(torqueLbFt * 10) / 10,
+            torqueNm: isNaN(torqueNm) ? 0 : Math.round(torqueNm * 10) / 10,
             specificOutput: Math.round(specificOutput * 10) / 10,
+            pistonSpeedMax: Math.round(pistonSpeedMax * 10) / 10,
+            rodRatio: isNaN(rodRatio) ? 0 : Math.round(rodRatio * 100) / 100,
             avgGasSpeed: Math.round(avgGasSpeed * 10) / 10,
             jetSize: jetSize,
-            targetRpm: Math.round(targetRpm),
-            maxRpm: Math.round(maxRpm),
-            calculatedGasSpeed: Math.round(calculatedGasSpeed * 10) / 10,
-            inSeatAreaCm2: Math.round(inSeatAreaCm2 * 100) / 100,
-            pistonAreaCm2: Math.round(pistonAreaCm2 * 100) / 100,
+            valveCount: valveCount,
         };
     }
 
+    // Update dynamic labels for max valve diameter based on bore and valve count
     function updateMaxValveLabels(bore, valveCount) {
         let maxIn, maxEx;
         if (valveCount === 4) {
             maxIn = (bore * 0.38).toFixed(1);
-            maxEx = (bore * 0.33).toFixed(1);
+            maxEx = (bore * 0.3339).toFixed(1);
         } else {
-            maxIn = (bore * 0.52).toFixed(1);
-            maxEx = (bore * 0.437).toFixed(1);
+            maxIn = (bore * 0.55).toFixed(1);
+            maxEx = (bore * 0.467).toFixed(1);
         }
         if (maxInValveLabel) maxInValveLabel.textContent = `MAX DIA: ${maxIn} MM`;
         if (maxExValveLabel) maxExValveLabel.textContent = `MAX DIA: ${maxEx} MM`;
@@ -217,66 +240,7 @@
         if (maxExSeatLabel) maxExSeatLabel.textContent = `MAX DIA: ${maxExSeat} MM`;
     }
 
-    function updateUI(results, inputs) {
-        if (unitSystem === 'metric') {
-            dispValue.textContent = results.displacementCC;
-            dispUnit.textContent = 'CC';
-            dispCID.textContent = results.displacementCID + ' CID';
-        } else {
-            dispValue.textContent = results.displacementCID;
-            dispUnit.textContent = 'CID';
-            dispCID.textContent = results.displacementCC + ' CC';
-        }
-
-        if (unitSystem === 'metric') {
-            powerValue.textContent = results.powerHP;
-            powerUnit.textContent = 'HP';
-        } else {
-            powerValue.textContent = results.powerKW;
-            powerUnit.textContent = 'kW';
-        }
-        powerRpm.textContent = '@ ' + results.targetRpm.toLocaleString() + ' RPM';
-        cfmValue.textContent = results.cfm;
-
-        if (unitSystem === 'metric') {
-            torqueValue.textContent = results.torqueLbFt;
-            torqueUnit.textContent = 'LB.FT';
-            torqueNm.textContent = results.torqueNm + ' Nm';
-        } else {
-            torqueValue.textContent = results.torqueNm;
-            torqueUnit.textContent = 'Nm';
-            torqueNm.textContent = results.torqueLbFt + ' LB.FT';
-        }
-
-        bmepValue.innerHTML = results.bmepBar + ' <span class="text-xs font-body-md text-tertiary">BAR</span>';
-        pistonSpeedValue.innerHTML = results.pistonSpeedMax + ' <span class="text-xs font-body-md text-tertiary">M/S</span> @ ' + results.maxRpm.toLocaleString() + ' RPM';
-        rodRatioValue.innerHTML = results.rodRatio + ' <span class="text-xs font-body-md text-tertiary">:1</span>';
-        airVelValue.innerHTML = results.avgGasSpeed + ' <span class="text-xs font-body-md text-tertiary">M/S</span>';
-        jettingValue.innerHTML = '#' + results.jetSize + ' <span class="text-xs font-body-md text-tertiary">MAIN</span>';
-        specOutputValue.innerHTML = results.specificOutput + ' <span class="text-xs font-body-md text-tertiary">HP/L</span>';
-
-        updateFlowMeter(results.cfm);
-
-        if (results.rodRatio < 1.6) {
-            rodRatioValue.style.color = '#ff4444';
-        } else if (results.rodRatio > 2.0) {
-            rodRatioValue.style.color = '#00b4d8';
-        } else {
-            rodRatioValue.style.color = '#f0a500';
-        }
-
-        if (results.pistonSpeedMax > 25) {
-            pistonSpeedValue.style.color = '#ff4444';
-        } else if (results.pistonSpeedMax > 22) {
-            pistonSpeedValue.style.color = '#f0a500';
-        } else {
-            pistonSpeedValue.style.color = '';
-        }
-
-        updateMaxValveLabels(inputs.bore, inputs.valveCount);
-        updateMaxSeatLabels(inputs.inValve, inputs.exValve);
-    }
-
+    // Update the flow meter bar
     function updateFlowMeter(cfm) {
         const maxCfm = 200;
         const segments = 10;
@@ -294,8 +258,90 @@
         flowMeter.innerHTML = html;
     }
 
+    // Update all output UI elements
+    function updateUI(results, inputs) {
+        // Displacement
+        if (unitSystem === 'metric') {
+            dispValue.textContent = results.displacementCC;
+            dispUnit.textContent = 'CC';
+            dispCID.textContent = results.displacementCID + ' CID';
+        } else {
+            dispValue.textContent = results.displacementCID;
+            dispUnit.textContent = 'CID';
+            dispCID.textContent = results.displacementCC + ' CC';
+        }
+
+        // Power
+        if (unitSystem === 'metric') {
+            powerValue.textContent = results.powerHP;
+            powerUnit.textContent = 'HP';
+        } else {
+            powerValue.textContent = results.powerKW;
+            powerUnit.textContent = 'kW';
+        }
+        powerRpm.textContent = '@ ' + results.targetRpm.toLocaleString() + ' RPM';
+
+        // Torque
+        if (unitSystem === 'metric') {
+            torqueValue.textContent = results.torqueLbFt;
+            torqueUnit.textContent = 'LB.FT';
+            torqueNm.textContent = results.torqueNm + ' Nm';
+        } else {
+            torqueValue.textContent = results.torqueNm;
+            torqueUnit.textContent = 'Nm';
+            torqueNm.textContent = results.torqueLbFt + ' LB.FT';
+        }
+
+        // Air flow
+        cfmValue.textContent = results.cfm;
+
+        // BMEP
+        bmepValue.innerHTML = results.bmepBar + ' <span class="text-xs font-body-md text-tertiary">BAR</span>';
+
+        // Piston speed
+        pistonSpeedValue.innerHTML = results.pistonSpeedMax + ' <span class="text-xs font-body-md text-tertiary">M/S</span> @ ' + results.maxRpm.toLocaleString() + ' RPM';
+
+        // Rod ratio (with color coding)
+        rodRatioValue.innerHTML = results.rodRatio + ' <span class="text-xs font-body-md text-tertiary">:1</span>';
+        if (results.rodRatio > 0) {
+            if (results.rodRatio < 1.6) {
+                rodRatioValue.style.color = '#ff4444';
+            } else if (results.rodRatio > 2.0) {
+                rodRatioValue.style.color = '#00b4d8';
+            } else {
+                rodRatioValue.style.color = '#f0a500';
+            }
+        } else {
+            rodRatioValue.style.color = ''; // reset
+        }
+
+        // Air velocity
+        airVelValue.innerHTML = results.avgGasSpeed + ' <span class="text-xs font-body-md text-tertiary">M/S</span>';
+
+        // Jetting
+        jettingValue.innerHTML = '#' + results.jetSize + ' <span class="text-xs font-body-md text-tertiary">MAIN</span>';
+
+        // Specific output
+        specOutputValue.innerHTML = results.specificOutput + ' <span class="text-xs font-body-md text-tertiary">HP/L</span>';
+
+        // Piston speed color warning
+        if (results.pistonSpeedMax > 25) {
+            pistonSpeedValue.style.color = '#ff4444';
+        } else if (results.pistonSpeedMax > 22) {
+            pistonSpeedValue.style.color = '#f0a500';
+        } else {
+            pistonSpeedValue.style.color = '';
+        }
+
+        updateFlowMeter(results.cfm);
+        updateMaxValveLabels(inputs.bore, inputs.valveCount);
+        updateMaxSeatLabels(inputs.inValve, inputs.exValve);
+    }
+
+    // Draw dyno chart
     function drawDynoChart(results, inputs) {
-        const canvas = dynoChart;
+        const canvas = dynoChartCanvas;
+        if (!canvas) return;
         const container = canvas.parentElement;
         canvas.width = container.clientWidth;
         canvas.height = container.clientHeight;
@@ -308,6 +354,7 @@
         const plotW = w - padding.left - padding.right;
         const plotH = h - padding.top - padding.bottom;
 
+        // Grid
         ctx.strokeStyle = 'rgba(127,131,134,0.15)';
         ctx.lineWidth = 0.5;
         const gridLinesY = 6;
@@ -327,6 +374,7 @@
             ctx.stroke();
         }
 
+        // Axes
         ctx.strokeStyle = 'rgba(200,200,200,0.6)';
         ctx.lineWidth = 1;
         ctx.beginPath();
@@ -392,6 +440,7 @@
         }
         ctx.fillText('RPM', w - padding.right + 10, h - padding.bottom + 6);
 
+        // Torque curve
         ctx.strokeStyle = '#00b4d8';
         ctx.lineWidth = 2;
         ctx.setLineDash([]);
@@ -407,6 +456,7 @@
         ctx.stroke();
         ctx.shadowBlur = 0;
 
+        // Power curve
         ctx.strokeStyle = '#ff544b';
         ctx.lineWidth = 2.5;
         ctx.shadowColor = 'rgba(255,84,75,0.6)';
@@ -421,9 +471,11 @@
         ctx.stroke();
         ctx.shadowBlur = 0;
 
+        // Peak markers
         const peakHpIdx = hpData.indexOf(Math.max(...hpData));
         const peakTqIdx = tqData.indexOf(Math.max(...tqData));
 
+        // HP peak dot
         const hpPeakX = toX(rpmData[peakHpIdx]);
         const hpPeakY = toY(hpData[peakHpIdx]);
         ctx.fillStyle = '#ff544b';
@@ -434,6 +486,7 @@
         ctx.fill();
         ctx.shadowBlur = 0;
 
+        // Torque peak dot
         const tqPeakX = toX(rpmData[peakTqIdx]);
         const tqPeakY = toY(tqData[peakTqIdx]);
         ctx.fillStyle = '#00b4d8';
@@ -456,6 +509,7 @@
         setTimeout(() => { chartOverlay.style.pointerEvents = 'none'; }, 300);
     }
 
+    // History management
     function loadHistory() {
         try {
             const stored = localStorage.getItem('ap_performance_history');
@@ -522,6 +576,7 @@
         showToast('History cleared.', 'delete', 2000);
     }
 
+    // Restore setup from history (global)
     window._restoreSetup = function(id) {
         const entry = simulationHistory.find(e => e.id === id);
         if (!entry) return;
@@ -533,22 +588,7 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    function saveCurrentSetup() {
-        const inputs = getInputValues();
-        const results = lastResults || calculatePerformance(inputs);
-        const setupName = 'Setup_' + inputs.bore + 'x' + inputs.stroke + '_C' + inputs.cylCount;
-        const setup = { name: setupName, inputs, results, timestamp: new Date().toISOString() };
-        try {
-            const saved = JSON.parse(localStorage.getItem('ap_saved_setups') || '[]');
-            saved.unshift(setup);
-            if (saved.length > 20) saved.length = 20;
-            localStorage.setItem('ap_saved_setups', JSON.stringify(saved));
-            showToast('Setup saved: ' + setupName, 'save', 2000);
-        } catch (e) {
-            showToast('Failed to save setup.', 'error', 2000);
-        }
-    }
-
+    // Export report
     function exportReport() {
         if (!lastResults) { showToast('Run a calculation first.', 'warning', 2000); return; }
         const inputs = getInputValues();
@@ -558,7 +598,7 @@
 AP PERFORMANCE - ENGINE SIMULATION REPORT
 ========================================
 Date: ${new Date().toLocaleString()}
-Version: 2.0.1
+Version: 1.0-STABLE
 
 --- ENGINE SPECS ---
 Bore: ${inputs.bore} mm
@@ -569,15 +609,13 @@ Fuel: ${inputs.fuelType}
 Compression Ratio: ${inputs.compRatio}:1
 Rod Length: ${inputs.rodLength} mm
 Rod Ratio: ${results.rodRatio}:1
-
---- VALVE TRAIN ---
+Valves per Cylinder: ${inputs.valveCount}
 Intake Valve: ${inputs.inValve} mm
 Exhaust Valve: ${inputs.exValve} mm
 Intake Seat ID: ${inputs.inSeat} mm
 Exhaust Seat ID: ${inputs.exSeat} mm
-Valve Count: ${inputs.valveCount} per cylinder
 Max Intake Valve Dia: ${inputs.valveCount === 4 ? (inputs.bore * 0.38).toFixed(1) : (inputs.bore * 0.55).toFixed(1)} mm
-Max Exhaust Valve Dia: ${inputs.valveCount === 4 ? (inputs.bore * 0.33).toFixed(1) : (inputs.bore * 0.467).toFixed(1)} mm
+Max Exhaust Valve Dia: ${inputs.valveCount === 4 ? (inputs.bore * 0.3339).toFixed(1) : (inputs.bore * 0.467).toFixed(1)} mm
 Max Intake Seat ID: ${(inputs.inValve - 2.5).toFixed(1)} mm
 Max Exhaust Seat ID: ${(inputs.exValve - 3.0).toFixed(1)} mm
 
@@ -615,6 +653,7 @@ Generated by AP Performance Calculator
         showToast('Report exported!', 'download', 2000);
     }
 
+    // Quick compare
     function quickCompare() {
         if (!lastResults) { showToast('Run a calculation first.', 'warning', 2000); return; }
         if (!compareData) {
@@ -631,6 +670,7 @@ Generated by AP Performance Calculator
         }
     }
 
+    // Unit toggle
     function toggleUnits() {
         unitSystem = unitSystem === 'metric' ? 'imperial' : 'metric';
         if (unitSystem === 'metric') {
@@ -653,6 +693,7 @@ Generated by AP Performance Calculator
         showToast('Switched to ' + unitSystem.toUpperCase() + ' units', 'swap_horiz', 1500);
     }
 
+    // Reset all to defaults
     function resetAll() {
         boreInput.value = defaults.bore;
         strokeInput.value = defaults.stroke;
@@ -673,6 +714,7 @@ Generated by AP Performance Calculator
         runCalculation();
     }
 
+    // Main calculation runner
     function runCalculation() {
         const inputs = getInputValues();
         const results = calculatePerformance(inputs);
@@ -686,6 +728,7 @@ Generated by AP Performance Calculator
         }, 1500);
     }
 
+    // Event listeners
     calculateBtn.addEventListener('click', () => {
         calculateBtn.innerHTML = `<span class="material-symbols-outlined animate-spin">refresh</span> COMPUTING...`;
         calculateBtn.disabled = true;
@@ -704,12 +747,12 @@ Generated by AP Performance Calculator
     });
 
     resetBtn.addEventListener('click', resetAll);
-    saveSetupBtn.addEventListener('click', saveCurrentSetup);
     quickCompareBtn.addEventListener('click', quickCompare);
     exportBtn.addEventListener('click', exportReport);
     clearHistoryBtn.addEventListener('click', clearHistory);
     themeToggle.addEventListener('click', toggleUnits);
 
+    // Debounced live update on any input change
     let debounceTimeout;
     const allInputs = [
         boreInput, strokeInput, cylCountSelect, cycleTypeSelect, fuelTypeSelect,
@@ -727,7 +770,6 @@ Generated by AP Performance Calculator
                 updateUI(results, inputs);
                 drawDynoChart(results, inputs);
                 statusBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-accent-gold"></span> STATUS: LIVE';
-                clearTimeout(debounceTimeout);
                 setTimeout(() => {
                     statusBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> STATUS: READY';
                 }, 800);
@@ -742,18 +784,16 @@ Generated by AP Performance Calculator
         });
     });
 
+    // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && e.ctrlKey) {
             e.preventDefault();
             runCalculation();
             showToast('Calculation triggered (Ctrl+Enter)', 'keyboard', 1500);
         }
-        if (e.key === 's' && e.ctrlKey) {
-            e.preventDefault();
-            saveCurrentSetup();
-        }
     });
 
+    // Resize handler for dyno chart
     let resizeTimeout;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimeout);
@@ -762,12 +802,12 @@ Generated by AP Performance Calculator
         }, 300);
     });
 
+    // Initialize
     function init() {
         loadHistory();
         runCalculation();
         chartOverlay.style.opacity = '0';
         chartOverlay.style.pointerEvents = 'none';
     }
-
     init();
 })();
