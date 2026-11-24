@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html class="dark" lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP PERFORMANCE | Static Compression Calculator</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800&family=Open+Sans:wght@400;600&family=JetBrains+Mono:wght@500;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script src="src/styles/tailwind.js"></script>
+    <link rel="stylesheet" href="src/styles/styles.css">
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container">
+<header class="w-full top-0 sticky bg-surface/90 backdrop-blur-md border-b border-outline-variant/20 z-50 glass-panel">
+    <div class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop py-sm flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-md">
+            <div class="w-8 h-8 bg-primary-container rounded flex items-center justify-center pulse-glow"><span class="material-symbols-outlined text-on-primary-container text-sm">bolt</span></div>
+            <span class="font-headline-md text-headline-md text-on-surface tracking-tight">AP<span class="text-primary">.</span>PERFORMANCE</span>
+        </a>
+        <div class="hidden sm:flex items-center gap-sm">
+            <a href="index.html" class="nav-link flex items-center gap-xs bg-surface-container-highest px-3 py-1 rounded-full border border-outline-variant/20 text-[10px] font-label-mono text-tertiary hover:text-primary"><span class="material-symbols-outlined text-sm">analytics</span> ENGINE</a>
+            <a href="injector.html" class="nav-link flex items-center gap-xs bg-surface-container-highest px-3 py-1 rounded-full border border-outline-variant/20 text-[10px] font-label-mono text-tertiary hover:text-primary"><span class="material-symbols-outlined text-sm">science</span> INJECTOR</a>
+            <a href="camshaft.html" class="nav-link flex items-center gap-xs bg-surface-container-highest px-3 py-1 rounded-full border border-outline-variant/20 text-[10px] font-label-mono text-tertiary hover:text-primary"><span class="material-symbols-outlined text-sm">precision_manufacturing</span> CAMSHAFT</a>
+            <a href="porting.html" class="nav-link flex items-center gap-xs bg-surface-container-highest px-3 py-1 rounded-full border border-outline-variant/20 text-[10px] font-label-mono text-tertiary hover:text-primary"><span class="material-symbols-outlined text-sm">air</span> PORTING</a>
+            <a href="compression.html" aria-current="page" class="nav-link flex items-center gap-xs bg-primary-container/20 px-3 py-1 rounded-full border border-primary/30 text-[10px] font-label-mono text-primary"><span class="material-symbols-outlined text-sm">speed</span> COMPRESSION</a>
+        </div>
+    </div>
+    <nav class="flex sm:hidden flex-wrap items-center gap-xs px-margin-mobile pb-sm">
+        <a href="index.html" class="flex-1 min-w-[28%] text-center bg-surface-container-highest px-2 py-2 rounded-lg border border-outline-variant/20 text-[10px] font-label-mono text-tertiary">ENGINE</a>
+        <a href="injector.html" class="flex-1 min-w-[28%] text-center bg-surface-container-highest px-2 py-2 rounded-lg border border-outline-variant/20 text-[10px] font-label-mono text-tertiary">INJECTOR</a>
+        <a href="camshaft.html" class="flex-1 min-w-[28%] text-center bg-surface-container-highest px-2 py-2 rounded-lg border border-outline-variant/20 text-[10px] font-label-mono text-tertiary">CAMSHAFT</a>
+        <a href="porting.html" class="flex-1 min-w-[28%] text-center bg-surface-container-highest px-2 py-2 rounded-lg border border-outline-variant/20 text-[10px] font-label-mono text-tertiary">PORTING</a>
+        <a href="compression.html" aria-current="page" class="flex-1 min-w-[28%] text-center bg-primary-container/20 px-2 py-2 rounded-lg border border-primary/30 text-[10px] font-label-mono text-primary">COMPRESSION</a>
+    </nav>
+</header>
+<main class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop py-lg">
+    <div class="mb-lg flex flex-col md:flex-row md:items-end justify-between border-l-4 border-primary pl-md slide-in">
+        <div>
+            <p class="font-label-mono text-[10px] text-primary tracking-[0.2em] mb-xs">ENGINE TOOLS / CALCULATION 05</p>
+            <h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">STATIC COMPRESSION</h1>
+            <p class="font-label-mono text-[11px] text-tertiary mt-xs uppercase tracking-wider">Kalkulator rasio kompresi statis mesin</p>
+        </div>
+        <span class="mt-md md:mt-0 bg-surface-container-highest px-3 py-1 rounded text-xs font-label-mono text-secondary border border-outline-variant/30">MODE: METRIC / CC</span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+        <section class="lg:col-span-5 space-y-gutter">
+            <div class="bg-surface-container-low border border-outline-variant/20 rounded-lg overflow-hidden">
+                <div class="bg-surface-container-highest px-md py-base border-b border-outline-variant/20 flex items-center justify-between">
+                    <h2 class="font-headline-md text-lg text-on-surface flex items-center gap-xs"><span class="material-symbols-outlined text-primary text-sm">architecture</span>01. DATA MESIN</h2>
+                    <span class="font-label-mono text-[10px] text-tertiary">ENGINE_SPEC</span>
+                </div>
+                <div class="p-md grid grid-cols-1 sm:grid-cols-2 gap-md">
+                    <label class="block space-y-xs sm:col-span-2"><span class="font-label-mono text-xs text-on-surface-variant">Volume ruang bakar / Chamber</span><div class="relative"><input id="chamber" type="number" min="0" step="0.01" value="12" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display p-base rounded-md outline-none"><span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-label-mono text-tertiary">CC</span></div></label>
+                    <label class="block space-y-xs"><span class="font-label-mono text-xs text-on-surface-variant">Diameter piston / Bore</span><div class="relative"><input id="bore" type="number" min="0" step="0.01" value="62" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display p-base rounded-md outline-none"><span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-label-mono text-tertiary">MM</span></div></label>
+                    <label class="block space-y-xs"><span class="font-label-mono text-xs text-on-surface-variant">Stroke / Langkah piston</span><div class="relative"><input id="stroke" type="number" min="0" step="0.01" value="58" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display p-base rounded-md outline-none"><span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-label-mono text-tertiary">MM</span></div></label>
+                </div>
+            </div>
+            <div class="bg-surface-container-low border border-outline-variant/20 rounded-lg overflow-hidden">
+                <div class="bg-surface-container-highest px-md py-base border-b border-outline-variant/20 flex items-center justify-between"><h2 class="font-headline-md text-lg text-on-surface flex items-center gap-xs"><span class="material-symbols-outlined text-primary text-sm">straighten</span>02. POSISI PISTON</h2><span class="font-label-mono text-[10px] text-tertiary">DECK_CLEARANCE</span></div>
+                <div class="p-md"><label class="block space-y-xs"><span class="font-label-mono text-xs text-on-surface-variant">Mendem piston dari bibir liner</span><div class="relative"><input id="deck" type="number" min="0" step="0.01" value="0.5" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display p-base rounded-md outline-none"><span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-label-mono text-tertiary">MM</span></div><span class="text-[10px] text-tertiary">Jarak piston di bawah bibir liner</span></label></div>
+            </div>
+            <div class="bg-surface-container-low border border-outline-variant/20 rounded-lg overflow-hidden">
+                <div class="bg-surface-container-highest px-md py-base border-b border-outline-variant/20 flex items-center justify-between"><h2 class="font-headline-md text-lg text-on-surface flex items-center gap-xs"><span class="material-symbols-outlined text-primary text-sm">category</span>03. DOME PISTON</h2><span class="font-label-mono text-[10px] text-tertiary">PISTON_CROWN</span></div>
+                <div class="p-md grid grid-cols-1 sm:grid-cols-2 gap-md">
+                    <label class="block space-y-xs"><span class="font-label-mono text-xs text-on-surface-variant">Diameter dome piston</span><div class="relative"><input id="domeD" type="number" min="0" step="0.01" value="30" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display p-base rounded-md outline-none"><span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-label-mono text-tertiary">MM</span></div></label>
+                    <label class="block space-y-xs"><span class="font-label-mono text-xs text-on-surface-variant">Tinggi dome piston</span><div class="relative"><input id="domeH" type="number" min="0" step="0.01" value="2" class="w-full bg-background border border-outline-variant/50 focus:border-primary text-on-surface font-data-display p-base rounded-md outline-none"><span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-label-mono text-tertiary">MM</span></div></label>
+                </div>
+            </div>
+            <button id="resetButton" type="button" class="w-full flex items-center justify-center gap-sm bg-surface-container-highest hover:bg-surface-bright border border-outline-variant/30 text-on-surface font-label-mono text-xs tracking-wider py-3 rounded-md transition-colors"><span class="material-symbols-outlined text-sm">restart_alt</span> RESET DATA</button>
+        </section>
+
+        <section class="lg:col-span-7 space-y-gutter">
+            <div class="relative overflow-hidden rounded-xl border border-primary/30 bg-black/40 dyno-grid-bg p-lg text-center">
+                <div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+                <p class="font-label-mono text-[10px] tracking-[0.2em] text-tertiary">HASIL RASIO KOMPRESI STATIS</p>
+                <div id="cr" aria-live="polite" class="font-data-display text-5xl sm:text-6xl md:text-7xl text-primary tracking-tighter my-md">-- : 1</div>
+                <p class="font-label-mono text-xs text-secondary">COMPRESSION RATIO</p>
+                <div class="mt-md flex items-center justify-center gap-xs text-[10px] font-label-mono text-tertiary"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span> LIVE CALCULATION</div>
+            </div>
+            <div class="bg-surface-container-low border border-outline-variant/20 rounded-lg overflow-hidden">
+                <div class="bg-surface-container-highest px-md py-base border-b border-outline-variant/20 flex items-center justify-between"><h2 class="font-headline-md text-lg text-on-surface flex items-center gap-xs"><span class="material-symbols-outlined text-primary text-sm">functions</span>04. DETAIL PERHITUNGAN</h2><span class="font-label-mono text-[10px] text-tertiary">CALC_OUTPUT</span></div>
+                <div class="p-md">
+                    <div class="grid grid-cols-2 gap-sm">
+                        <div class="bg-background border border-outline-variant/20 rounded-md p-md"><span class="block font-label-mono text-[10px] text-tertiary">VOLUME LANGKAH</span><strong id="vs" class="block font-data-display text-xl text-on-surface mt-sm">-- cc</strong></div>
+                        <div class="bg-background border border-outline-variant/20 rounded-md p-md"><span class="block font-label-mono text-[10px] text-tertiary">VOLUME MENDEM</span><strong id="vd" class="block font-data-display text-xl text-on-surface mt-sm">-- cc</strong></div>
+                        <div class="bg-background border border-outline-variant/20 rounded-md p-md"><span class="block font-label-mono text-[10px] text-tertiary">VOLUME DOME</span><strong id="vdom" class="block font-data-display text-xl text-on-surface mt-sm">-- cc</strong></div>
+                        <div class="bg-background border border-outline-variant/20 rounded-md p-md"><span class="block font-label-mono text-[10px] text-tertiary">TOTAL RUANG SISA</span><strong id="vc" class="block font-data-display text-xl text-primary mt-sm">-- cc</strong></div>
+                    </div>
+                    <div class="mt-md bg-background border border-outline-variant/20 rounded-md p-md">
+                        <p class="font-label-mono text-[10px] text-tertiary mb-sm">FORMULA / CALCULATION TRACE</p>
+                        <div id="formula" aria-live="polite" class="font-label-mono text-xs leading-7 text-secondary">Masukkan data mesin untuk menghitung.</div>
+                    </div>
+                    <p id="warning" role="status" class="hidden mt-md border-l-2 border-accent-gold bg-accent-gold/10 px-md py-sm text-xs text-accent-gold"></p>
+                </div>
+            </div>
+            <div class="border border-outline-variant/20 rounded-lg p-md bg-surface-container-low">
+                <div class="flex items-start gap-sm"><span class="material-symbols-outlined text-accent-gold">info</span><div><h3 class="font-label-mono text-xs text-on-surface mb-xs">CATATAN PERHITUNGAN</h3><p class="text-xs text-tertiary leading-relaxed">Dome diasumsikan berbentuk silinder sesuai model pada kalkulator sumber. Hasil merupakan estimasi geometris; akurasi bergantung pada pengukuran volume chamber, bentuk dome aktual, dan posisi piston.</p></div></div>
+            </div>
+        </section>
+    </div>
+    <footer class="text-center font-label-mono text-[10px] text-tertiary mt-xl">AP PERFORMANCE • STATIC COMPRESSION CALCULATOR</footer>
+</main>
+<script src="src/scripts/compression.js"></script>
+</body>
+</html>
