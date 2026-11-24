@@ -68,7 +68,7 @@
     }
 
     function resetData() {
-        const defaults = { chamber: 12, bore: 62, stroke: 58, deck: 0.5, domeD: 30, domeH: 2 };
+        const defaults = { chamber: 0, bore: 0, stroke: 0, deck: 0, domeD: 0, domeH: 0 };
         Object.entries(defaults).forEach(([id, value]) => { $(id).value = value; });
         calculate();
     }
